@@ -6,6 +6,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/event-number', function () {
-    return view('event_number');
+Route::get('/even', function () {
+    return view('even_number');
 });
