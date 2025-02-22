@@ -2,7 +2,7 @@
 @section('title', 'Home')
 @section('content')
     <h1 style="text-align: center">Welcome to WebSec</h1>
-    <div class="card m-4">
+    <div class="contiainer m-3">
         <div class="card-body" style="text-align: center">
             <button type="button" class="btn btn-primary" onclick="doSomething()">Press Me</button>
         </div>
