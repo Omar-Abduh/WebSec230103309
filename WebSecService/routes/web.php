@@ -33,13 +33,87 @@ Route::get('/mini-test', function () {
     return view('mini_test', compact('bill'));
 })->name('mini-test');
 
-// Route::get('/transcript', function () {
-//     $transcript = [
-//         ['course' => 'Mathematics', 'grade' => 'A'],
-//         ['course' => 'Physics', 'grade' => 'B+'],
-//         ['course' => 'Chemistry', 'grade' => 'A-'],
-//         ['course' => 'Biology', 'grade' => 'B'],
-//         ['course' => 'History', 'grade' => 'A']
-//     ];
-//     return view('transcript', compact('transcript'));
-// })->name('transcript');
+
+Route::get('/transcript', function () {
+    $courses = [
+        [
+            'code' => 'CS101',
+            'name' => 'Introduction to Programming',
+            'ch' => 3,
+            'grade' => 85,
+            'gpa' => 0,
+            'letter' => ''
+        ],
+        [
+            'code' => 'CS102',
+            'name' => 'Data Structures',
+            'ch' => 3,
+            'grade' => 92,
+            'gpa' => 0,
+            'letter' => ''
+        ],
+        [
+            'code' => 'MATH201',
+            'name' => 'Calculus I',
+            'ch' => 4,
+            'grade' => 88,
+            'gpa' => 0,
+            'letter' => ''
+        ],
+        [
+            'code' => 'ENG101',
+            'name' => 'Academic Writing',
+            'ch' => 3,
+            'grade' => 78,
+            'gpa' => 0,
+            'letter' => ''
+        ],
+        [
+            'code' => 'HIST101',
+            'name' => 'World History',
+            'ch' => 3,
+            'grade' => 80,
+            'gpa' => 0,
+            'letter' => ''
+        ],
+        [
+            'code' => 'PHYS101',
+            'name' => 'Physics I',
+            'ch' => 4,
+            'grade' => 75,
+            'gpa' => 0,
+            'letter' => ''
+        ],
+        [
+            'code' => 'CHEM101',
+            'name' => 'General Chemistry',
+            'ch' => 4,
+            'grade' => 82,
+            'gpa' => 0,
+            'letter' => ''
+        ],
+        [
+            'code' => 'BIO101',
+            'name' => 'Biology I',
+            'ch' => 3,
+            'grade' => 89,
+            'gpa' => 0,
+            'letter' => ''
+        ]
+    ];
+
+    $totalCredits = 0;
+    $totalPoints = 0;
+
+    foreach ($courses as &$course) {
+        $course['gpa'] = calculateGPA($course['grade']);
+        $course['letter'] = getGradeLetter($course['grade']);
+        $totalCredits += $course['ch'];
+        $totalPoints += $course['gpa'] * $course['ch'];
+    }
+
+    $overallGPA = $totalPoints / $totalCredits;
+    $overallGradeLetter = getGradeLetter($overallGPA * 25); // Convert GPA back to percentage for letter grade
+
+    return view('transcript', compact('courses', 'overallGPA', 'overallGradeLetter'));
+})->name('transcript');
