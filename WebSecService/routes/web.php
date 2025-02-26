@@ -25,7 +25,6 @@ Route::get('/mini-test', function () {
         (object)['name' => 'Banana', 'quantity' => 5, 'price' => 1],
         (object)['name' => 'Orange', 'quantity' => 3, 'price' => 2],
         (object)['name' => 'sss', 'quantity' => 3, 'price' => 2],
-        (object)['name' => 'qq', 'quantity' => 3, 'price' => 2],
     ];
     $bill->total = array_reduce($bill->items, function ($carry, $item) {
         return $carry + ($item->quantity * $item->price);
