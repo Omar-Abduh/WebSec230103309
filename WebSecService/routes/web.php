@@ -34,7 +34,7 @@ Route::get('/mini-test', function () {
 })->name('mini-test');
 
 
-Route::get('/transcript', function () {
+Route::get('/gpa', function () {
     $courses = [
         [
             'code' => 'CS101',
@@ -115,5 +115,5 @@ Route::get('/transcript', function () {
     $overallGPA = $totalPoints / $totalCredits;
     $overallGradeLetter = getGradeLetter($overallGPA * 25); // Convert GPA back to percentage for letter grade
 
-    return view('transcript', compact('courses', 'overallGPA', 'overallGradeLetter'));
-})->name('transcript');
+    return view('gpa_task', compact('courses', 'overallGPA', 'overallGradeLetter'));
+})->name('gpa');

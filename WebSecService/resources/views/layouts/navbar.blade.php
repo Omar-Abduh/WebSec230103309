@@ -17,7 +17,7 @@
                 <a class="nav-link" href="{{ route('mini-test') }}">Bill Information</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('transcript') }}">Transcript</a>
+                <a class="nav-link" href="{{ route('gpa') }}">GPA Task</a>
             </li>
         </ul>
     </div>
