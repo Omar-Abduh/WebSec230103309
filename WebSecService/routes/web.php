@@ -7,15 +7,15 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/multable', function () {
-    return view('multable');
+    return view('lec1.multable');
 })->name('multable');
 
 Route::get('/even', function () {
-    return view('even_number');
+    return view('lec1.even_number');
 })->name('even');
 
 Route::get('/prime', function () {
-    return view('prime_number');
+    return view('lec1.prime_number');
 })->name('prime');
 
 Route::get('/mini-test', function () {
@@ -29,7 +29,7 @@ Route::get('/mini-test', function () {
     $bill->total = array_reduce($bill->items, function ($carry, $item) {
         return $carry + ($item->quantity * $item->price);
     }, 0);
-    return view('mini_test', compact('bill'));
+    return view('lec1.mini_test', compact('bill'));
 })->name('mini-test');
 
 
@@ -114,5 +114,5 @@ Route::get('/gpa', function () {
     $overallGPA = $totalPoints / $totalCredits;
     $overallGradeLetter = getGradeLetter($overallGPA * 25); // Convert GPA back to percentage for letter grade
 
-    return view('gpa_task', compact('courses', 'overallGPA', 'overallGradeLetter'));
+    return view('lec1.gpa_task', compact('courses', 'overallGPA', 'overallGradeLetter'));
 })->name('gpa');
