@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\ProductsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+// lec1
 Route::get('/multable', function () {
     return view('lec1.multable');
 })->name('multable');
@@ -116,3 +118,6 @@ Route::get('/gpa', function () {
 
     return view('lec1.gpa_task', compact('courses', 'overallGPA', 'overallGradeLetter'));
 })->name('gpa');
+
+// lec2
+Route::get('/products', [ProductsController::class, 'index'])->name('products.index');

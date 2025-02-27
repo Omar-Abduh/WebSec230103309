@@ -12,7 +12,15 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        //
+        $products = (object)[
+            (object)['id'=>1, 'code'=>'TV01', 'name'=>'LG TV 50"', 
+            'model' =>'LG8768787', 'photo'=>'lg.jpg', 
+            'description'=>'lorem ipsum..'],
+            (object)['id'=>2, 'code'=>'RF01', 'name'=>'Toshiba Refrigerator 14"',
+            'model'=>'TS76634', 'photo'=>'toshiba-refrigerator.jpg',    
+            'description'=>'lorem ipsum..'],
+     ];
+        return view('lec2.products.list', compact('products'));
     }
 
     /**
