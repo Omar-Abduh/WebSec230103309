@@ -121,3 +121,6 @@ Route::get('/gpa', function () {
 
 // lec2
 Route::get('/products', [ProductsController::class, 'index'])->name('products.index');
+Route::get('products/edit/{products?}', [ProductsController::class, 'edit'])->name('products.edit');
+Route::post('products/save/{products?}', [ProductsController::class, 'store'])->name('products.save');
+Route::get('products/delete/{products}', [ProductsController::class, 'destroy'])->name('products.delete');
