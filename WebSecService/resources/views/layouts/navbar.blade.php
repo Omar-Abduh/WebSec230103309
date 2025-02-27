@@ -19,6 +19,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('gpa') }}">GPA Task</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('products.index') }}">Products</a>
+            </li>
         </ul>
     </div>
 </nav>
