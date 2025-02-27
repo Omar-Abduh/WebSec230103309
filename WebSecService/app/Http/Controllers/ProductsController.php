@@ -10,16 +10,30 @@ class ProductsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = (object)[
-            (object)['id'=>1, 'code'=>'TV01', 'name'=>'LG TV 50"', 
-            'model' =>'LG8768787', 'photo'=>'lg.jpg', 
-            'description'=>'lorem ipsum..'],
-            (object)['id'=>2, 'code'=>'RF01', 'name'=>'Toshiba Refrigerator 14"',
-            'model'=>'TS76634', 'photo'=>'toshiba-refrigerator.jpg',    
-            'description'=>'lorem ipsum..'],
-     ];
+        $query = Products::select("products.*");
+
+        $query->when(
+            $request->keywords,
+            fn($q) => $q->where("name", "like", "%$request->keywords%")
+        );
+
+        $query->when(
+            $request->min_price,
+            fn($q) => $q->where("price", ">=", $request->min_price)
+        );
+
+        $query->when($request->max_price, fn($q) =>
+        $q->where("price", "<=", $request->max_price));
+
+        $query->when(
+            $request->order_by,
+            fn($q) => $q->orderBy($request->order_by, $request->order_direction ?? "ASC")
+        );
+
+        $products = $query->get();
+
         return view('lec2.products.list', compact('products'));
     }
 
@@ -34,9 +48,13 @@ class ProductsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Products $products = null, $id = null)
     {
-        //
+        $products = $products ?? new Products();
+        $products->fill($request->all());
+        $products->save();
+
+        return redirect()->route('products.index');
     }
 
     /**
@@ -50,9 +68,10 @@ class ProductsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Products $products)
+    public function edit(Products $products = null, Request $request, $id = null)
     {
-        //
+        $products = $products ?? new Products();
+        return view('lec2.products.edit', compact('products'));
     }
 
     /**
@@ -68,6 +87,7 @@ class ProductsController extends Controller
      */
     public function destroy(Products $products)
     {
-        //
+        $products->delete();
+        return redirect()->route('products.index');
     }
 }
