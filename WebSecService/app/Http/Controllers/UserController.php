@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-     /**
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -21,7 +21,16 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $user = new User();
+        return view('users.create', compact('user'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(User $user)
+    {
+        // return view('users.ce_users', compact('user'));
     }
 
     /**
@@ -29,23 +38,20 @@ class UserController extends Controller
      */
     public function store(Request $request, User $user)
     {
-        // 
-    }
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        //
-    }
+        $user = new User();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user, Request $request)
-    {
-        // 
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        return redirect()->route('users.index');
     }
 
     /**
@@ -64,4 +70,3 @@ class UserController extends Controller
         // 
     }
 }
-

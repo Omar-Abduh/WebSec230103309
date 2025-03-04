@@ -127,3 +127,5 @@ Route::get('products/delete/{products}', [ProductsController::class, 'destroy'])
 
 // Users
 Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+Route::get('user/create', [App\Http\Controllers\UserController::class, 'create'])->name('users.create');
+Route::post('user/create', [App\Http\Controllers\UserController::class, 'store'])->name('users.store');
