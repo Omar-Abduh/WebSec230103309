@@ -60,10 +60,10 @@
                                 <div class="col-md-8">
                                     <h5 class="card-title">{{ $product->name }}</h5>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 p-1">
                                     <a href="{{ route('products.edit', $product->id) }}" class="btn btn-success w-100">Edit</a>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 p-1">
                                     <a href="{{ route('products.delete', $product->id) }}" class="btn btn-danger w-100">Delete</a>
                                 </div>
                             </div>

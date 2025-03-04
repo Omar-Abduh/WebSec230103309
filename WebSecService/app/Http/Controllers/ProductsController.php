@@ -48,7 +48,7 @@ class ProductsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Products $products = null, $id = null)
+    public function store(Request $request, Products $products = null)
     {
         $products = $products ?? new Products();
         $products->fill($request->all());
@@ -68,7 +68,7 @@ class ProductsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Products $products = null, Request $request, $id = null)
+    public function edit(Products $products = null, Request $request)
     {
         $products = $products ?? new Products();
         return view('lec2.products.edit', compact('products'));
