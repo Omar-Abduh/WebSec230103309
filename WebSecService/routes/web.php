@@ -124,3 +124,6 @@ Route::get('/products', [ProductsController::class, 'index'])->name('products.in
 Route::get('products/edit/{products?}', [ProductsController::class, 'edit'])->name('products.edit');
 Route::post('products/save/{products?}', [ProductsController::class, 'store'])->name('products.save');
 Route::get('products/delete/{products}', [ProductsController::class, 'destroy'])->name('products.delete');
+
+// Users
+Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
