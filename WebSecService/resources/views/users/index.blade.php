@@ -7,7 +7,7 @@
                 <h1 class="h3">Users</h1>
             </div>
             <div class="col-md-6 text-end">
-                <a href="" class="btn btn-success">Add User</a>
+                <a href="{{ route('users.create') }}" class="btn btn-success">Add User</a>
             </div>
         </div>
         <div class="card shadow-sm">
@@ -19,21 +19,24 @@
                     <table class="table table-striped table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th>ID</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Created At</th>
                                 <th>Updated At</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($users as $user)
                                 <tr>
-                                    <td>{{ $user->id }}</td>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->created_at }}</td>
                                     <td>{{ $user->updated_at }}</td>
+                                    <td>
+                                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm" >Edit</a>
+                                        <a href="{{ route('users.destroy', $user->id) }}" class="btn btn-danger btn-sm" >Delete</a>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

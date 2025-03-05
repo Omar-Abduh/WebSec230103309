@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -30,7 +32,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        // return view('users.ce_users', compact('user'));
+        return view('users.edit', compact('user'));
     }
 
     /**
@@ -41,14 +43,14 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|confirmed',
         ]);
 
         $user = new User();
 
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password = bcrypt($request->password);
+        $user->password = bcrypt($request->password); // Ensure password is always set
         $user->save();
 
         return redirect()->route('users.index');
@@ -59,7 +61,22 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($user->id),
+            ],
+        ]);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->save();
+
+        return redirect()->route('users.index');
     }
 
     /**
@@ -67,6 +84,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        // 
+        $user->delete();
+        return redirect()->route('users.index');
     }
 }

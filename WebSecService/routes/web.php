@@ -129,3 +129,6 @@ Route::get('products/delete/{products}', [ProductsController::class, 'destroy'])
 Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
 Route::get('user/create', [App\Http\Controllers\UserController::class, 'create'])->name('users.create');
 Route::post('user/create', [App\Http\Controllers\UserController::class, 'store'])->name('users.store');
+Route::get('user/edit/{user?}', [App\Http\Controllers\UserController::class, 'edit'])->name('users.edit');
+Route::post('user/save/{user?}', [App\Http\Controllers\UserController::class, 'update'])->name('users.update');
+Route::get('user/delete/{user}', [App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
