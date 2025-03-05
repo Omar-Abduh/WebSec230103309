@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Products;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 
 class ProductsController extends Controller
 {
+    use ValidatesRequests;
     /**
      * Display a listing of the resource.
      */
