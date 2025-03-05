@@ -3,12 +3,70 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
+    use ValidatesRequests;
+    // Login function
+    public function login()
+    {
+        return view('auth.login');
+    }
+
+    // Do Login  function
+    public function doLogin(Request $request)
+    {
+        if (!Auth::attempt(['email' => $request->email, 'password' => $request->password]))
+            return redirect()->back()->withInput($request->input())->withErrors('Invalid login information.');
+
+        $user = User::where('email', $request->email)->first();
+        Auth::setUser($user);
+
+        return redirect()->route('home');
+    }
+
+    //  register function
+    public function register()
+    {
+        return view('auth.register');
+    }
+
+    //  register function
+    public function doRegister(Request $request, User $user)
+    {
+
+        try {
+
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors('Invalid registration information.');
+        }
+
+
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->save();
+        return redirect()->route('home');
+    }
+
+    //  logout function
+    public function logout()
+    {
+        Auth::logout();
+        return redirect()->route('home');
+    }
+
     /**
      * Display a listing of the resource.
      */
