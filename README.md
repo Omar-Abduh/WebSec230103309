@@ -72,7 +72,7 @@ Before you begin, ensure you have the following installed:
 #### **Linux/macOS**
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-repo-url/StudyWebSec.git
+   git clone https://github.com/Omar-Abduh/WebSec230103309.git
    cd StudyWebSec
    ```
 2. **Install dependencies:**
