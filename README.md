@@ -50,7 +50,7 @@ Before you begin, ensure you have the following installed:
 
 #### **Windows**
 1. **Clone the repository:**
-   ```powershell
+   ```bash
    git clone https://github.com/Omar-Abduh/WebSec230103309.git
    cd StudyWebSec
    ```
