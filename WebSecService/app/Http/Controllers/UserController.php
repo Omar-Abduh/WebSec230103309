@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
@@ -16,6 +17,11 @@ class UserController extends Controller
     public function login()
     {
         return view('auth.login');
+    }
+
+    public function profile(Request $request, User $user)
+    {
+        return view('users.profile', compact('user'));
     }
 
     // Do Login  function
@@ -124,17 +130,31 @@ class UserController extends Controller
             'email' => [
                 'required',
                 'string',
-                'email',
+                'email',    
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
+            'old_password' => 'nullable|string',
+            'password' => 'nullable|string|confirmed|different:old_password',
         ]);
 
         $user->name = $request->name;
         $user->email = $request->email;
+
+        if ($request->filled('old_password') && $request->filled('password')) {
+            if (Hash::check($request->old_password, $user->password)) {
+                if ($request->old_password === $request->password) {
+                    return redirect()->back()->withErrors('New password cannot be the same as the old password.');
+                }
+                $user->password = bcrypt($request->password);
+            } else {
+                return redirect()->back()->withErrors('Old password is incorrect.');
+            }
+        }
+
         $user->save();
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.profile');
     }
 
     /**

@@ -140,3 +140,6 @@ Route::post('/login', [UserController::class, 'doLogin'])->name('do_login');
 Route::get('/register', [UserController::class, 'register'])->name('register');
 Route::post('/register', [UserController::class, 'doRegister'])->name('do_register');
 Route::get('/logout', [UserController::class, 'logout'])->name('logout');
+
+// user profile
+Route::get('/user/profile/{user}', [UserController::class,'profile'])->name('users.profile');
