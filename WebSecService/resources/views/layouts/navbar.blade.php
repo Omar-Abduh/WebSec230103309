@@ -29,7 +29,7 @@
         <ul class="navbar-nav">
             @auth
                 <li class="nav-item">
-                    <a class="nav-link" href="">{{ auth()->user()->name }}</a>
+                    <a class="nav-link" href="{{ route('users.profile', auth()->user()->id) }}">{{ auth()->user()->name }}</a>
                 </li>
                 <li class="nav-item">
                     <a class="btn btn-danger btn-m" href="{{ route('logout') }}">Logout</a>
