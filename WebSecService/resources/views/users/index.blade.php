@@ -23,6 +23,7 @@
                                 <th>Email</th>
                                 <th>Created At</th>
                                 <th>Updated At</th>
+                                <th>Show Profile</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -33,6 +34,9 @@
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->created_at }}</td>
                                     <td>{{ $user->updated_at }}</td>
+                                    <td>
+                                        <a href="{{ route('users.profile', $user->id) }}">Show {{ $user->name }}</a>
+                                    </td>
                                     <td>
                                         <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm" >Edit</a>
                                         <a href="{{ route('users.destroy', $user->id) }}" class="btn btn-danger btn-sm" >Delete</a>
