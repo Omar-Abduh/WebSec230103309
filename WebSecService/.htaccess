@@ -1,9 +1,5 @@
 <IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteCond %{REQUEST_URL} !^(public)
+    RewriteEngine on
+    RewriteCond %{REQUEST_URI} !^/public/
     RewriteRule ^(.*)$ public/$1 [L]
-</IfModule>
-
-<IfModule mime_module>
-    AddHandler application/xhttpd-ea-php82 .php .php8 .phtml
 </IfModule>
