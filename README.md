@@ -52,12 +52,11 @@ Before you begin, ensure you have the following installed:
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/Omar-Abduh/WebSec230103309.git
-   cd StudyWebSec
+   cd WebSec230103309/WebSecService
    ```
 2. **Install dependencies:**
    ```powershell
    composer install
-   npm install
    ```
 3. **Set up environment:**
    ```powershell
@@ -73,12 +72,11 @@ Before you begin, ensure you have the following installed:
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/Omar-Abduh/WebSec230103309.git
-   cd StudyWebSec
+   cd WebSec230103309/WebSecService
    ```
 2. **Install dependencies:**
    ```bash
    composer install
-   npm install
    ```
 3. **Set up environment:**
    ```bash
