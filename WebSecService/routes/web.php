@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookManagementController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -143,3 +144,10 @@ Route::get('/logout', [UserController::class, 'logout'])->name('logout');
 
 // user profile
 Route::get('/user/profile/{user}', [UserController::class,'profile'])->name('users.profile');
+
+//  
+// Assignments 
+Route::get('/books', [BookManagementController::class, 'index'])->middleware(['auth'])->name('books.index');
+Route::get('/book/create', [BookManagementController::class, 'create'])->middleware(['auth'])->name('books.create');
+
+Route::post('bookManagement', [BookManagementController::class, 'store'])->middleware(['auth'])->name('books.store');

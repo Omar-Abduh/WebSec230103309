@@ -63,6 +63,10 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
         $user->save();
+
+
+        Auth::login($user);
+        
         return redirect()->route('home');
     }
 

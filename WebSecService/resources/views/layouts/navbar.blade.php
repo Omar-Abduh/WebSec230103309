@@ -25,6 +25,14 @@
                     <li><a class="dropdown-item" href="{{ route('users.index') }}">Users</a></li>
                 </ul>
             </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="lecture2Dropdown" role="button">
+                    Quizzes
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="lecture2Dropdown">
+                    <li><a class="dropdown-item" href="{{ route('books.index') }}">Book Management</a></li>
+                </ul>
+            </li>
         </ul>
         <ul class="navbar-nav">
             @auth
