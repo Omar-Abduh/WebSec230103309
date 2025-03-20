@@ -104,6 +104,14 @@ class UserController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit_pass(User $user)
+    {
+        return view('users.change_pass', compact('user'));
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request, User $user)
@@ -138,27 +146,37 @@ class UserController extends Controller
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
-            'old_password' => 'nullable|string',
-            'password' => 'nullable|string|confirmed|different:old_password',
         ]);
 
         $user->name = $request->name;
         $user->email = $request->email;
-
-        if ($request->filled('old_password') && $request->filled('password')) {
-            if (Hash::check($request->old_password, $user->password)) {
-                if ($request->old_password === $request->password) {
-                    return redirect()->back()->withErrors('New password cannot be the same as the old password.');
-                }
-                $user->password = bcrypt($request->password);
-            } else {
-                return redirect()->back()->withErrors('Old password is incorrect.');
-            }
-        }
-
         $user->save();
 
         return redirect()->route('users.profile');
+    }
+
+    
+    /**
+     * Change the password of the specified user.
+     */
+    public function savePass(Request $request, User $user)
+    {
+        $request->validate([
+            'old_password' => 'required|string',
+            'password' => 'required|string|confirmed|different:old_password',
+        ]);
+
+        if (Hash::check($request->old_password, $user->password)) {
+            if ($request->old_password === $request->password) {
+                return back()->withErrors('New password cannot be the same as the old password.');
+            }
+            $user->password = bcrypt($request->password);
+            $user->save();
+            return redirect()->route('users.profile', ['user' => $user->id]);
+        } else {
+            return back()->withErrors('Old password is incorrect.');
+        }
+
     }
 
     /**

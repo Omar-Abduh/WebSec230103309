@@ -131,8 +131,10 @@ Route::get('products/delete/{products}', [ProductsController::class, 'destroy'])
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 Route::get('user/create', [UserController::class, 'create'])->name('users.create');
 Route::post('user/create', [UserController::class, 'store'])->name('users.store');
-Route::get('user/edit/{user?}', [UserController::class, 'edit'])->name('users.edit');
+Route::get('user/edit/{user}', [UserController::class, 'edit'])->name('users.edit');
 Route::post('user/save/{user?}', [UserController::class, 'update'])->name('users.update');
+Route::get('user/save/{user}', [UserController::class, 'edit_pass'])->name('users.change_pass');
+Route::post('user/save/{user}', [UserController::class, 'savePass'])->name('users.change_pass.save');
 Route::get('user/delete/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
 // Login and Register

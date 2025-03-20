@@ -31,18 +31,6 @@
                             <input type="email" name="email" id="email" class="form-control"
                                 value="{{ old('email', $user->email) }}" required>
                         </div>
-                        <div class="form-group mb-3">
-                            <label for="old_password">Old Password</label>
-                            <input type="password" class="form-control" id="old_password" name="old_password">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="password">New Password</label>
-                            <input type="password" class="form-control" id="password" name="password">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="password_confirmation">Confirm New Password</label>
-                            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
-                        </div>
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
                 </form>
