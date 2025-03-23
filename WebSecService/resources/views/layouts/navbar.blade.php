@@ -4,8 +4,10 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('home') }}">Home</a>
             </li>
+
+            <!-- Lecture 1 Dropdown -->
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="lecture1Dropdown" role="button">
+                <a class="nav-link dropdown-toggle" href="#" id="lecture1Dropdown" role="button">
                     Lecture 1
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="lecture1Dropdown">
@@ -16,31 +18,55 @@
                     <li><a class="dropdown-item" href="{{ route('gpa') }}">GPA Task</a></li>
                 </ul>
             </li>
+
+            <!-- Lecture 2 Dropdown -->
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="lecture2Dropdown" role="button">
+                <a class="nav-link dropdown-toggle" href="#" id="lecture2Dropdown" role="button">
                     Lecture 2
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="lecture2Dropdown">
                     <li><a class="dropdown-item" href="{{ route('products.index') }}">Products</a></li>
-                    <li><a class="dropdown-item" href="{{ route('users.index') }}">Users</a></li>
                 </ul>
             </li>
+
+            <!-- Quizzes Dropdown -->
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="lecture2Dropdown" role="button">
+                <a class="nav-link dropdown-toggle" href="#" id="quizzesDropdown" role="button">
                     Quizzes
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="lecture2Dropdown">
+                <ul class="dropdown-menu" aria-labelledby="quizzesDropdown">
                     <li><a class="dropdown-item" href="{{ route('books.index') }}">Book Management</a></li>
                 </ul>
             </li>
         </ul>
+
+        <!-- User Dropdown -->
         <ul class="navbar-nav">
             @auth
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('users.profile', auth()->user()->id) }}">{{ auth()->user()->name }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="btn btn-danger btn-m" href="{{ route('logout') }}">Logout</a>
+                <li class="nav-item dropdown user-dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button">
+                        {{ auth()->user()->name }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end admin-dropdown" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="{{ route('users.profile', auth()->user()->id) }}">Profile</a>
+                        </li>
+
+                        @can('show_users')
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li class="dropdown-header">Access Control Panel</li>
+                            <li><a class="dropdown-item" href="{{ route('users.index') }}">User Access Control</a></li>
+                            <li><a class="dropdown-item" href="{{ route('roles.index') }}">Roles Management</a></li>
+                            <li><a class="dropdown-item" href="{{ route('permissions.index') }}">Permissions Management</a>
+                            </li>
+                        @endcan
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item text-danger" href="{{ route('logout') }}">Logout</a></li>
+                    </ul>
                 </li>
             @else
                 <li class="nav-item">
@@ -54,14 +80,34 @@
     </div>
 </nav>
 
+<!-- Styles -->
 <style>
-    /* Show dropdown on hover */
-    .nav-item.dropdown:hover .dropdown-menu {
+    /* Show dropdown on hover for Lecture 1, Lecture 2, and Quizzes */
+    .navbar-nav .dropdown:not(.user-dropdown):hover .dropdown-menu {
         display: block;
+        margin-top: 0;
     }
 
-    /* Ensure the dropdown stays visible */
-    .nav-item .dropdown-toggle::after {
-        display: none;
+    .dropdown-menu {
+        transition: all 0.3s ease-in-out;
+        min-width: 200px;
+        z-index: 1050;
+    }
+
+    .admin-dropdown {
+        right: 0 !important;
+        left: auto !important;
+        transform: translateX(-10px);
+    }
+
+    /* Ensure dropdowns close properly */
+    .dropdown-menu-end {
+        right: 0;
+        left: auto;
+    }
+
+    /* Fix user dropdown not working fully */
+    .user-dropdown:hover .dropdown-menu {
+        display: block;
     }
 </style>
