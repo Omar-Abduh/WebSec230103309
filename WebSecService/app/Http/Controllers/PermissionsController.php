@@ -58,6 +58,31 @@ class PermissionsController extends Controller
         return redirect()->route('roles.index');
     }
 
+    // Give permission to role
+    public function give_permissions(Role $role)
+    {
+        $permissions = Permission::all();
+        return view('permissions.give_permissions', compact('role', 'permissions'));
+    }
+
+    public function add_permission_to_role(Request $request, Role $role)
+    {
+        $permission = Permission::find($request->permission_id);
+        if ($permission) {
+            $role->givePermissionTo($permission);
+        }
+        return response()->json(['success' => true]);
+    }
+
+    public function remove_permission_from_role(Request $request, Role $role)
+    {
+        $permission = Permission::find($request->permission_id);
+        if ($permission) {
+            $role->revokePermissionTo($permission);
+        }
+        return response()->json(['success' => true]);
+    }
+
     // Permissions Logics 
 
     public function permissions_create()
@@ -91,7 +116,7 @@ class PermissionsController extends Controller
 
     public function permissions_update(Request $request, Permission $permission)
     {
-        
+
         $request->validate([
             'display_name' => 'required|string|max:50|unique:permissions,display_name,' . $permission->id,
             'name' => [
@@ -112,6 +137,32 @@ class PermissionsController extends Controller
     public function permissions_destroy(Permission $permission)
     {
         $permission->delete();
+        return redirect()->route('permissions.index');
+    }
+
+    // Assign Role to Permissions
+    public function assign_role(Permission $permissions)
+    {
+        $roles = Role::all();
+        return view('permissions.assign_role', compact('roles', 'permissions'));
+    }
+
+    public function store_role_assignment(Request $request, Permission $permission)
+    {
+        $request->validate([
+            'role_id' => 'nullable|exists:roles,id',
+        ]);
+
+        if ($request->role_id) {
+            $role = Role::find($request->role_id);
+            if ($role) {
+                $permission->assignRole($role);
+            }
+        } else {
+            // Remove all roles from the permission if "No Role" is selected
+            $permission->roles()->detach();
+        }
+
         return redirect()->route('permissions.index');
     }
 }
