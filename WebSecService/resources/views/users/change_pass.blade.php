@@ -21,17 +21,21 @@
                                 <strong>Error!</strong> {{ $error }}
                             </div>
                         @endforeach
-                        <div class="form-group mb-3">
-                            <label for="old_password">Old Password</label>
-                            <input type="password" class="form-control" id="old_password" name="old_password" required>
-                        </div>
+
+                        @if (!auth()->user()->hasPermissionTo('admin_users') || auth()->user()->id == $user->id)
+                            <div class="form-group mb-3">
+                                <label for="old_password">Old Password</label>
+                                <input type="password" class="form-control" id="old_password" name="old_password" required>
+                            </div>
+                        @endif
                         <div class="form-group mb-3">
                             <label for="password">New Password</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
                         <div class="form-group mb-3">
                             <label for="password_confirmation">Confirm New Password</label>
-                            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+                            <input type="password" class="form-control" id="password_confirmation"
+                                name="password_confirmation" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Change Password</button>
                     </div>

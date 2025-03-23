@@ -10,6 +10,7 @@
             <p><strong>Email:</strong> {{ $user->email }}</p>
             <p><strong>Registered on:</strong> {{ $user->created_at->format('d M Y') }}</p>
             <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary">Edit Profile</a>
+            <a href="{{ route('users.change_pass', $user->id) }}" class="btn btn-primary">Change Password</a>
         </div>
     </div>
 </div>
