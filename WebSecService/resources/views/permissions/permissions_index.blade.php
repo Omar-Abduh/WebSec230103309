@@ -39,21 +39,34 @@
                                                 return $role->permissions->contains($permission);
                                             });
                                         @endphp
+
                                         @if ($assignedRole->isNotEmpty())
                                             @foreach ($assignedRole as $role)
-                                                <span class="badge bg-primary">{{ $role->name }}</span>
+                                                @if ($role->name == 'Super Admin')
+                                                    <span class="badge bg-dark">{{ $role->name }}</span>
+                                                    <!-- Super Admin First -->
+                                                @elseif ($role->name == 'Admin')
+                                                    <span class="badge bg-danger">{{ $role->name }}</span>
+                                                @elseif ($role->name == 'Employee')
+                                                    <span class="badge bg-info text-dark">{{ $role->name }}</span>
+                                                @else
+                                                    <span class="badge bg-primary">{{ $role->name }}</span>
+                                                @endif
                                             @endforeach
                                         @else
                                             <span class="badge bg-secondary">No Role</span>
                                         @endif
-
                                     </td>
+
                                     <td scope="col">{{ $permission->created_at->format('d M Y') }}</td>
                                     <td scope="col"
                                         class="d-flex align-items-center justify-content-center flex-wrap gap-2">
-                                        <a href="" class="btn btn-info btn-sm">Assign To Role</a>
-                                        <a href="{{ route('permissions.edit', $permission->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                        <a href="{{ route('permissions.delete', $permission->id) }}" class="btn btn-danger btn-sm">Delete</a>
+                                        <a href="{{ route('permissions.assign_role', $permission->id) }}"
+                                            class="btn btn-info btn-sm">Assign Role</a>
+                                        <a href="{{ route('permissions.edit', $permission->id) }}"
+                                            class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="{{ route('permissions.delete', $permission->id) }}"
+                                            class="btn btn-danger btn-sm">Delete</a>
                                     </td>
                                 </tr>
                             @endforeach
