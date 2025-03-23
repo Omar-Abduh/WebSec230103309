@@ -16,6 +16,7 @@ class RolesSeeder extends Seeder
     public function run(): void
     {
         $role_admin = Role::create(['name' => 'Admin']);
+        $role_super_admin = Role::create(['name' => 'Super Admin']);
         $role_employee = Role::create(['name' => 'Employee']);
         Permission::create(['name' => 'add_products', 'display_name' => 'Add Products']);
         Permission::create(['name' => 'edit_products', 'display_name' => 'Edit Products']);
@@ -37,10 +38,10 @@ class RolesSeeder extends Seeder
 
         $admin_user = User::find(1);
         $test_user = User::find(2);
-        $admin_user->assignRole('Admin');
+        $admin_user->assignRole('Admin', 'Super Admin');
         $test_user->assignRole('Employee');
 
         // Direct Permissions
-        $admin_user->givePermissionTo(['show_roles', 'show_permissions', 'add_roles', 'add_permissions', 'edit_roles', 'edit_permissions', 'delete_roles', 'delete_permissions']);
+        $role_super_admin->givePermissionTo(['show_roles', 'show_permissions', 'add_roles', 'add_permissions', 'edit_roles', 'edit_permissions', 'delete_roles', 'delete_permissions']);
     }
 }
