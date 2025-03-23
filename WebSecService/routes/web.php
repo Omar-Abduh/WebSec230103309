@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookManagementController;
+use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -8,6 +9,39 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+// Login, Register and logout
+Route::get('/login', [UserController::class, 'login'])->name('login');
+Route::post('/login', [UserController::class, 'doLogin'])->name('do_login');
+Route::get('/register', [UserController::class, 'register'])->name('register');
+Route::post('/register', [UserController::class, 'doRegister'])->name('do_register');
+Route::get('/logout', [UserController::class, 'logout'])->name('logout');
+
+// Roles and Permission
+// Roles
+Route::get('/roles', [PermissionsController::class, 'roles_index'])->name('roles.index');
+Route::get('/role/create', [PermissionsController::class, 'roles_create'])->name('roles.create');
+Route::post('/role/create', [PermissionsController::class, 'roles_store'])->name('roles.store');
+Route::get('/role/{role}/edit', [PermissionsController::class, 'roles_edit'])->name('roles.edit');
+Route::post('/role/{role}/update', [PermissionsController::class, 'roles_update'])->name('roles.update');
+Route::get('/role/{role}/delete', [PermissionsController::class, 'roles_destroy'])->name('roles.delete');
+// Give permission to role
+Route::get('/role/{role}/give-permissions', [PermissionsController::class, 'give_permissions'])->name('roles.givePermissions');
+Route::post('/roles/{role}/add-permission', [PermissionsController::class, 'add_permission_to_role'])->name('roles.add_permission');
+Route::post('/roles/{role}/remove-permission', [PermissionsController::class, 'remove_permission_from_role'])->name('roles.remove_permission');
+
+// Permissions
+Route::get('/permissions', [PermissionsController::class, 'permissions_index'])->name('permissions.index');
+Route::get('/permission/create', [PermissionsController::class, 'permissions_create'])->name('permissions.create');
+Route::post('/permission/create', [PermissionsController::class, 'permissions_store'])->name('permissions.store');
+Route::get('/permission/{permission}/edit', [PermissionsController::class, 'permissions_edit'])->name('permissions.edit');
+Route::post('/permission/{permission}/update', [PermissionsController::class, 'permissions_update'])->name('permissions.update');
+Route::get('/permission/{permission}/delete', [PermissionsController::class, 'permissions_destroy'])->name('permissions.delete');
+
+// Assign Role to Permissions
+Route::get('/permissions/{permissions}/assign-role', [PermissionsController::class, 'assign_role'])->name('permissions.givePermissions');
+Route::get('/permissions/{permission}/assign-role', [PermissionsController::class, 'assign_role'])->name('permissions.assign_role');
+Route::post('/permissions/{permission}/assign-role', [PermissionsController::class, 'store_role_assignment'])->name('permissions.store_role_assignment');
 
 // lec1
 Route::get('/multable', function () {
@@ -35,7 +69,6 @@ Route::get('/mini-test', function () {
     }, 0);
     return view('lec1.mini_test', compact('bill'));
 })->name('mini-test');
-
 
 Route::get('/gpa', function () {
     $courses = [
@@ -127,29 +160,23 @@ Route::get('products/edit/{products?}', [ProductsController::class, 'edit'])->na
 Route::post('products/save/{products?}', [ProductsController::class, 'store'])->name('products.save');
 Route::get('products/delete/{products}', [ProductsController::class, 'destroy'])->name('products.delete');
 
-// Users
-Route::get('/users', [UserController::class, 'index'])->name('users.index');
-Route::get('user/create', [UserController::class, 'create'])->name('users.create');
-Route::post('user/create', [UserController::class, 'store'])->name('users.store');
+// Users index
+Route::get('/users', [UserController::class, 'index'])->middleware('can:show_users')->name('users.index');
+// Users create
+Route::get('user/create', [UserController::class, 'create'])->middleware('can:add_users')->name('users.create');
+Route::post('user/create', [UserController::class, 'store'])->middleware('can:add_users')->name('users.store');
+// Users edit without password
 Route::get('user/edit/{user}', [UserController::class, 'edit'])->name('users.edit');
-Route::post('user/save/{user?}', [UserController::class, 'update'])->name('users.update');
+Route::post('user/edit/{user?}', [UserController::class, 'update'])->name('users.update');
+// Users edit password
 Route::get('user/save/{user}', [UserController::class, 'edit_pass'])->name('users.change_pass');
-Route::post('user/save/{user}', [UserController::class, 'savePass'])->name('users.change_pass.save');
-Route::get('user/delete/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+Route::post('user/save/{user?}', [UserController::class, 'savePass'])->name('users.change_pass.save');
+// Users delete
+Route::delete('user/delete/{user}', [UserController::class, 'destroy'])->middleware('can:delete_users')->name('users.destroy');
+// users profile
+Route::get('/user/profile/{user}', [UserController::class, 'profile'])->name('users.profile');
 
-// Login and Register
-Route::get('/login', [UserController::class, 'login'])->name('login');
-Route::post('/login', [UserController::class, 'doLogin'])->name('do_login');
-Route::get('/register', [UserController::class, 'register'])->name('register');
-Route::post('/register', [UserController::class, 'doRegister'])->name('do_register');
-Route::get('/logout', [UserController::class, 'logout'])->name('logout');
-
-// user profile
-Route::get('/user/profile/{user}', [UserController::class,'profile'])->name('users.profile');
-
-//  
 // Assignments 
 Route::get('/books', [BookManagementController::class, 'index'])->middleware(['auth'])->name('books.index');
 Route::get('/book/create', [BookManagementController::class, 'create'])->middleware(['auth'])->name('books.create');
-
 Route::post('bookManagement', [BookManagementController::class, 'store'])->middleware(['auth'])->name('books.store');
