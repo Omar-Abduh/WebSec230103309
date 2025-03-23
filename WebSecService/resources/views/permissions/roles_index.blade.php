@@ -38,7 +38,7 @@
                                     <td scope="col">{{ $role->created_at->format('d M Y') }}</td>
                                     <td scope="col">{{ $role->updated_at->format('d M Y') }}</td>
                                     <td scope="col" class="gap-2">
-                                        <a href="" class="btn btn-info btn-sm">Assign Permissions</a>
+                                        <a href="{{ route('roles.givePermissions', $role->id) }}" class="btn btn-info btn-sm">Give Permissions</a>
                                         <a href="{{ route('roles.edit', $role->id) }}"
                                             class="btn btn-warning btn-sm">Edit</a>
                                         <a href="{{ route('roles.delete', $role->id) }}" class="btn btn-danger btn-sm">Delete</a>
