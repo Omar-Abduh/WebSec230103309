@@ -13,24 +13,27 @@ class PermissionsController extends Controller
 
     public function roles_index()
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('show_roles')) abort(401);
+        }
+
         $roles = Role::all();
         return view('permissions.roles_index', compact('roles'));
     }
 
-    public function permissions_index()
-    {
-        $permissions = Permission::all();
-        $roles = Role::with('permissions')->get();
-        return view('permissions.permissions_index', compact('permissions', 'roles'));
-    }
-
     public function roles_create()
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('add_roles')) abort(401);
+        }
         return view('permissions.roles_create');
     }
 
     public function roles_store(Request $request)
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('add_roles')) abort(401);
+        }
         $request->validate([
             'name' => 'required|string|unique:roles,name|max:50',
         ]);
@@ -40,11 +43,17 @@ class PermissionsController extends Controller
 
     public function roles_edit(Role $role)
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('edit_roles')) abort(401);
+        }
         return view('permissions.edit_role', compact('role'));
     }
 
     public function roles_update(Request $request, Role $role)
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('edit_roles')) abort(401);
+        }
         $request->validate([
             'name' => 'required|string|max:50|unique:roles,name,' . $role->id,
         ]);
@@ -54,6 +63,9 @@ class PermissionsController extends Controller
 
     public function roles_destroy(Role $role)
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('delete_roles')) abort(401);
+        }
         $role->delete();
         return redirect()->route('roles.index');
     }
@@ -61,12 +73,18 @@ class PermissionsController extends Controller
     // Give permission to role
     public function give_permissions(Role $role)
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('give_permission')) abort(401);
+        }
         $permissions = Permission::all();
         return view('permissions.give_permissions', compact('role', 'permissions'));
     }
 
     public function add_permission_to_role(Request $request, Role $role)
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('give_permission')) abort(401);
+        }
         $permission = Permission::find($request->permission_id);
         if ($permission) {
             $role->givePermissionTo($permission);
@@ -76,6 +94,9 @@ class PermissionsController extends Controller
 
     public function remove_permission_from_role(Request $request, Role $role)
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('give_permission')) abort(401);
+        }
         $permission = Permission::find($request->permission_id);
         if ($permission) {
             $role->revokePermissionTo($permission);
@@ -85,13 +106,29 @@ class PermissionsController extends Controller
 
     // Permissions Logics 
 
+    public function permissions_index()
+    {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('show_permissions')) abort(401);
+        }
+        $permissions = Permission::all();
+        $roles = Role::with('permissions')->get();
+        return view('permissions.permissions_index', compact('permissions', 'roles'));
+    }
+
     public function permissions_create()
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('add_permissions')) abort(401);
+        }
         return view('permissions.permissions_create');
     }
 
     public function permissions_store(Request $request)
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('add_permissions')) abort(401);
+        }
         $request->validate([
             'display_name' => 'required|string|unique:permissions,display_name|max:50',
             'name' => [
@@ -111,12 +148,17 @@ class PermissionsController extends Controller
 
     public function permissions_edit(Permission $permission)
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('edit_permissions')) abort(401);
+        }
         return view('permissions.edit_permission', compact('permission'));
     }
 
     public function permissions_update(Request $request, Permission $permission)
     {
-
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('edit_permissions')) abort(401);
+        }
         $request->validate([
             'display_name' => 'required|string|max:50|unique:permissions,display_name,' . $permission->id,
             'name' => [
@@ -136,6 +178,9 @@ class PermissionsController extends Controller
 
     public function permissions_destroy(Permission $permission)
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('delete_permissions')) abort(401);
+        }
         $permission->delete();
         return redirect()->route('permissions.index');
     }
@@ -143,6 +188,9 @@ class PermissionsController extends Controller
     // Assign Role to Permissions
     public function assign_role(Permission $permissions)
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('assign_role')) abort(401);
+        }
         $roles = Role::all();
         $selectedRoles = $permissions->roles;
         return view('permissions.assign_role', compact('roles', 'permissions', 'selectedRoles'));
@@ -150,6 +198,9 @@ class PermissionsController extends Controller
 
     public function store_role_assignment(Request $request, Permission $permission)
     {
+        if (!auth()->user()->hasRole(['Admin', 'Super Admin'])) {
+            if (!auth()->user()->hasPermissionTo('assign_role')) abort(401);
+        }
         $request->validate([
             'role_id' => 'nullable|exists:roles,id',
         ]);
