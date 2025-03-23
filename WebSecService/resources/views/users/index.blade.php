@@ -22,17 +22,21 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Email</th>
-                                <th scope="col">Roles</th>
+                                <th scope="col">
+                                    <a href="{{ route('roles.index') }}">Roles</a>
+                                </th>
+                                {{-- <th scope="col">Permissions</th> --}}
                                 <th scope="col">Created At</th>
                                 <th scope="col">Updated At</th>
-                                <th scope="col">Show Profile</th>
                                 <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($users as $user)
                                 <tr>
-                                    <td scope="col">{{ $user->id }}</td>
+                                    <td scope="col">
+                                        <a href="{{ route('users.profile', $user->id) }}">{{ $user->id }}</a>
+                                    </td>
                                     <td scope="col">{{ $user->name }}</td>
                                     <td scope="col">{{ $user->email }}</td>
                                     <td scope="col">
@@ -43,30 +47,51 @@
                                         @else
                                             @foreach ($user->getRoleNames() as $roleName)
                                                 @if ($roleName == 'Admin')
-                                                    <a href="{{ route('roles.index') }}">
-                                                        <span class="badge bg-danger">{{ $roleName }}</span>
-                                                    </a>
+                                                    <span class="badge bg-danger">{{ $roleName }}</span>
+                                                @elseif ($roleName == 'Super Admin')
+                                                    <span class="badge bg-dark">{{ $roleName }}</span>
+                                                    <!-- Change color for Super Admin -->
                                                 @else
-                                                    <a href="{{ route('roles.index') }}">
-                                                        <span class="badge bg-primary">{{ $roleName }}</span>
-                                                    </a>
+                                                    <span class="badge bg-primary">{{ $roleName }}</span>
                                                 @endif
                                             @endforeach
                                         @endif
                                     </td>
+
+                                    {{-- <td scope="col">
+                                        @if ($user->permissions->isEmpty())
+                                            <span class="badge bg-secondary">No Permissions</span>
+                                        @else
+                                            <div class="d-flex flex-wrap">
+                                                @foreach ($user->permissions as $index => $permission)
+                                                    <div class="col-3 p-1"> <!-- Ensures 3 items per row -->
+                                                        <span class="badge bg-info text-dark w-100 text-center small p-1">
+                                                            {{ $permission->display_name }}
+                                                        </span>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </td>
+                                     --}}
+
                                     <td scope="col">{{ $user->created_at->format('d M Y') }}</td>
-                                    <td scope="col">{{ $user->updated_at->format('d M Y H:i:s') }}</td>
+                                    <td scope="col">{{ $user->updated_at->format('d M Y') }}</td>
                                     <td scope="col">
-                                        <a href="{{ route('users.profile', $user->id) }}">Show {{ $user->name }}</a>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <a href="{{ route('users.edit', $user->id) }}"
+                                                class="btn btn-warning btn-sm">Edit</a>
+                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                                onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                            </form>
+                                            <a href="{{ route('users.change_pass', $user->id) }}"
+                                                class="btn btn-warning btn-sm">Change Password</a>
+                                        </div>
                                     </td>
-                                    <td scope="col">
-                                        <a href="{{ route('users.edit', $user->id) }}"
-                                            class="btn btn-warning btn-sm">Edit</a>
-                                        <a href="{{ route('users.change_pass', $user->id) }}"
-                                            class="btn btn-warning btn-sm">Change Password</a>
-                                        <a href="{{ route('users.destroy', $user->id) }}"
-                                            class="btn btn-danger btn-sm">Delete</a>
-                                    </td>
+
                                 </tr>
                             @endforeach
                         </tbody>
