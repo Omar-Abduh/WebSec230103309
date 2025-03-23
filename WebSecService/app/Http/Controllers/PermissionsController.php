@@ -144,7 +144,8 @@ class PermissionsController extends Controller
     public function assign_role(Permission $permissions)
     {
         $roles = Role::all();
-        return view('permissions.assign_role', compact('roles', 'permissions'));
+        $selectedRoles = $permissions->roles;
+        return view('permissions.assign_role', compact('roles', 'permissions', 'selectedRoles'));
     }
 
     public function store_role_assignment(Request $request, Permission $permission)
