@@ -11,6 +11,7 @@ use Illuminate\Validation\Rules\Password;
 use App\Http\Controllers\Controller;
 use Artisan;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -67,10 +68,26 @@ class UserController extends Controller
         return redirect()->route('home');
     }
 
-    // User profile methods
+    // User profile method in UserController
     public function profile(Request $request, User $user)
     {
-        return view('users.profile', compact('user'));
+        // Fetch roles with permissions only for 'Super Admin' and 'Admin'
+        $roles = Role::whereIn('name', ['Super Admin', 'Admin'])->with('permissions')->get();
+
+        // Get permission names for 'Super Admin' and 'Admin'
+        $superAdminPermissions = $roles->where('name', 'Super Admin')->first()?->permissions->pluck('name')->toArray() ?? [];
+        $adminPermissions = $roles->where('name', 'Admin')->first()?->permissions->pluck('name')->toArray() ?? [];
+
+        // Fetch all user permissions
+        $userPermissions = $user->getAllPermissions()->map(function ($permission) use ($superAdminPermissions, $adminPermissions) {
+            return [
+                'name' => $permission->name,
+                'display_name' => $permission->display_name ?? $permission->name,
+                'color' => in_array($permission->name, $superAdminPermissions) ? 'bg-dark' : (in_array($permission->name, $adminPermissions) ? 'bg-danger' : 'bg-primary')
+            ];
+        });
+
+        return view('users.profile', compact('user', 'userPermissions'));
     }
 
     public function edit(User $user)
@@ -119,6 +136,7 @@ class UserController extends Controller
     {
         if (!auth()->user()->hasPermissionTo('show_users')) abort(401);
         $users = User::all();
+
         return view('users.index', compact('users'));
     }
 
