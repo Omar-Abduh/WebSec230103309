@@ -22,7 +22,7 @@
             <!-- Lecture 2 Dropdown -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="lecture2Dropdown" role="button">
-                    Lecture 2
+                    Product Store
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="lecture2Dropdown">
                     <li><a class="dropdown-item" href="{{ route('products.index') }}">Products</a></li>
