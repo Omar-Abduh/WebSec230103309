@@ -9,6 +9,7 @@
             <div class="card-body">
                 <p><strong>Email:</strong> {{ $user->email }}</p>
                 <p><strong>Registered on:</strong> {{ $user->created_at->format('d M Y') }}</p>
+                <p><strong>Credit:</strong> ${{ $user->credit }}</p>
                 <p><strong>Roles:</strong>
                     @if ($user->getRoleNames()->isEmpty())
                         <span class="badge bg-secondary">No Role</span>
@@ -38,9 +39,6 @@
                         @endforeach
                     @endif
                 </p>
-
-
-
 
                 <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary">Edit Profile</a>
                 <a href="{{ route('users.change_pass', $user->id) }}" class="btn btn-primary">Change Password</a>
