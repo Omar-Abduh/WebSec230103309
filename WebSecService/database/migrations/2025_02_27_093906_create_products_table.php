@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('code', 64)->unique(); // 'code' column with a maximum length of 64 characters
             $table->string('name', 256); // 'name' column with a maximum length of 256 characters
             $table->unsignedBigInteger('price'); // 'price' column as an unsigned big integer
+            $table->unsignedBigInteger('amount'); // 'price' column as an unsigned big integer
             $table->string('model', 128); // 'model' column with a maximum length of 128 characters
             $table->text('description')->nullable(); // 'description' column that can store longer text and can be null
             $table->string('photo', 128)->nullable(); // 'photo' column with a maximum length of 128 characters and can be null
