@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Artisan;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
@@ -95,7 +96,10 @@ class UserController extends Controller
         if (auth()->id() !== $user->id) {
             if (!auth()->user()->hasPermissionTo('edit_users')) abort(401);
         }
-        return view('users.edit', compact('user'));
+
+        $roles = Role::all(); // Fetch all roles
+        $permissions = Permission::all(); // Fetch all permissions
+        return view('users.edit', compact('user', 'roles', 'permissions'));
     }
 
     public function edit_pass(User $user)
@@ -186,6 +190,22 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->save();
+
+        // Save new roles assigned to user
+        if ($request->has('roles')) {
+            $user->syncRoles($request->roles);
+        } else {
+            $user->syncRoles([]);
+        }
+
+        if ($request->has('permissions')) {
+            $user->syncPermissions($request->permissions);
+        } else {
+            $user->syncPermissions([]);
+        }
+
+        // Clear cache after assigning roles
+        Artisan::call('cache:clear');
 
         if (auth()->id() !== $user->id) {
             return redirect()->route('users.index');
