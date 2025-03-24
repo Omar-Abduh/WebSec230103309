@@ -34,6 +34,10 @@ class RolesSeeder extends Seeder
         Permission::create(['name' => 'delete_permissions', 'display_name' => 'Delete Permissions']);
         Permission::create(['name' => 'show_roles', 'display_name' => 'Show Roles']);
         Permission::create(['name' => 'show_permissions', 'display_name' => 'Show Permissions']);
+        Permission::create(['name' => 'give_permission', 'display_name' => 'Give Permission']);
+        Permission::create(['name' => 'assign_role', 'display_name' => 'Assign Role']);
+        Permission::create(['name' => 'assign_role_user', 'display_name' => 'Assign Role To User']);
+        Permission::create(['name' => 'give_permission_user', 'display_name' => 'Give Permission To User']);
         $role_admin->givePermissionTo(['add_products', 'edit_products', 'delete_products', 'show_users', 'edit_users', 'delete_users', 'admin_users', 'add_users']);
 
         $admin_user = User::find(1);
@@ -42,6 +46,19 @@ class RolesSeeder extends Seeder
         $test_user->assignRole('Employee');
 
         // Direct Permissions
-        $role_super_admin->givePermissionTo(['show_roles', 'show_permissions', 'add_roles', 'add_permissions', 'edit_roles', 'edit_permissions', 'delete_roles', 'delete_permissions']);
+        $role_super_admin->givePermissionTo([
+            'show_roles',
+            'show_permissions',
+            'add_roles',
+            'add_permissions',
+            'edit_roles',
+            'edit_permissions',
+            'delete_roles',
+            'delete_permissions',
+            'give_permission',
+            'assign_role',
+            'assign_role_user',
+            'give_permission_user',
+        ]);
     }
 }
