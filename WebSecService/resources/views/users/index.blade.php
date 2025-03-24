@@ -25,7 +25,7 @@
                                 <th scope="col">
                                     <a href="{{ route('roles.index') }}">Roles</a>
                                 </th>
-                                {{-- <th scope="col">Permissions</th> --}}
+                                <th scope="col"># Permissions</th>
                                 <th scope="col">Created At</th>
                                 <th scope="col">Updated At</th>
                                 <th scope="col">Actions</th>
@@ -74,7 +74,7 @@
                                         @endif
                                     </td>
                                      --}}
-
+                                    <td scope="col">{{ count($user->getAllPermissions()) }}</td>
                                     <td scope="col">{{ $user->created_at->format('d M Y') }}</td>
                                     <td scope="col">{{ $user->updated_at->format('d M Y') }}</td>
                                     <td scope="col">
