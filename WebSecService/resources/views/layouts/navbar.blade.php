@@ -51,16 +51,26 @@
                         <li><a class="dropdown-item" href="{{ route('users.profile', auth()->user()->id) }}">Profile</a>
                         </li>
 
-                        @can('show_users')
+                        @hasallroles(['Admin', 'Super Admin'])
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li class="dropdown-header">Access Control Panel</li>
-                            <li><a class="dropdown-item" href="{{ route('users.index') }}">User Access Control</a></li>
-                            <li><a class="dropdown-item" href="{{ route('roles.index') }}">Roles Management</a></li>
-                            <li><a class="dropdown-item" href="{{ route('permissions.index') }}">Permissions Management</a>
-                            </li>
-                        @endcan
+
+                            @can('show_users')
+                                <li><a class="dropdown-item" href="{{ route('users.index') }}">User Access Control</a></li>
+                            @endcan
+
+                            @can('show_roles')
+                                <li><a class="dropdown-item" href="{{ route('roles.index') }}">Roles Management</a></li>
+                            @endcan
+
+                            @can('show_permissions')
+                                <li><a class="dropdown-item" href="{{ route('permissions.index') }}">Permissions Management</a>
+                                </li>
+                            @endcan
+                        @endhasallroles
+
 
                         <li>
                             <hr class="dropdown-divider">
@@ -77,6 +87,7 @@
                 </li>
             @endauth
         </ul>
+
     </div>
 </nav>
 
