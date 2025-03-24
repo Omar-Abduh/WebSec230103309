@@ -62,6 +62,8 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
+        $user->assignRole('Customer');
+        Artisan::call('cache:clear');
         $user->save();
 
         Auth::login($user);

@@ -33,6 +33,11 @@
                                     value="{{ $products->price }}">
                             </div>
                             <div class="mb-3">
+                                <label for="amount" class="form-label">Amount:</label>
+                                <input type="number" class="form-control" placeholder="amount" name="amount" required
+                                    value="{{ $products->amount }}">
+                            </div>
+                            <div class="mb-3">
                                 <label for="photo" class="form-label">Photo:</label>
                                 <input type="text" class="form-control" placeholder="Photo" name="photo" required
                                     value="{{ $products->photo }}">

@@ -6,9 +6,11 @@
             <div class="col-md-10">
                 <h1>Products</h1>
             </div>
-            <div class="col-md-2">
-                <a href="{{ route('products.edit') }}" class="btn btn-success w-100">Add Product</a>
-            </div>
+            @can('add_products')
+                <div class="col-md-2">
+                    <a href="{{ route('products.edit') }}" class="btn btn-success w-100">Add Product</a>
+                </div>
+            @endcan
         </div>
 
         <form class="mb-4">
@@ -34,7 +36,8 @@
                 </div>
                 <div class="col-md-2">
                     <select name="order_direction" class="form-select">
-                        <option value="" {{ request()->order_direction == '' ? 'selected' : '' }} disabled>Order Direction</option>
+                        <option value="" {{ request()->order_direction == '' ? 'selected' : '' }} disabled>Order
+                            Direction</option>
                         <option value="ASC" {{ request()->order_direction == 'ASC' ? 'selected' : '' }}>ASC</option>
                         <option value="DESC" {{ request()->order_direction == 'DESC' ? 'selected' : '' }}>DESC</option>
                     </select>
@@ -52,7 +55,8 @@
             <div class="card mb-3">
                 <div class="row g-0">
                     <div class="col-md-4">
-                        <img src="{{ asset("images/products/$product->photo") }}" class="img-fluid rounded-start" alt="{{ $product->name }}">
+                        <img src="{{ asset("images/products/$product->photo") }}" class="img-fluid rounded-start"
+                            alt="{{ $product->name }}">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -60,11 +64,20 @@
                                 <div class="col-md-8">
                                     <h5 class="card-title">{{ $product->name }}</h5>
                                 </div>
+                                @can('edit_products')
+                                    <div class="col-md-2 p-1">
+                                        <a href="{{ route('products.edit', $product->id) }}"
+                                            class="btn btn-success w-100">Edit</a>
+                                    </div>
+                                @endcan
+                                @can('delete_products')
+                                    <div class="col-md-2 p-1">
+                                        <a href="{{ route('products.delete', $product->id) }}"
+                                            class="btn btn-danger w-100">Delete</a>
+                                    </div>
+                                @endcan
                                 <div class="col-md-2 p-1">
-                                    <a href="{{ route('products.edit', $product->id) }}" class="btn btn-success w-100">Edit</a>
-                                </div>
-                                <div class="col-md-2 p-1">
-                                    <a href="{{ route('products.delete', $product->id) }}" class="btn btn-danger w-100">Delete</a>
+                                    <a href="{{ route('products.addToCart', $product->id) }}" class="btn btn-primary w-100">Buy</a>
                                 </div>
                             </div>
                             <table class="table table-striped">
@@ -85,14 +98,19 @@
                                     <td>{{ $product->price }} LE</td>
                                 </tr>
                                 <tr>
+                                    <th>Amount</th>
+                                    <td>{{ $product->amount }}</td>
+                                </tr>
+                                <tr>
                                     <th>Description</th>
                                     <td>{{ $product->description }}</td>
                                 </tr>
+                                
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
         @endforeach
-     </div>
+    </div>
 @endsection

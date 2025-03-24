@@ -18,6 +18,7 @@ class RolesSeeder extends Seeder
         $role_admin = Role::create(['name' => 'Admin']);
         $role_super_admin = Role::create(['name' => 'Super Admin']);
         $role_employee = Role::create(['name' => 'Employee']);
+        Role::create(['name' => 'Customer']);
         Permission::create(['name' => 'add_products', 'display_name' => 'Add Products']);
         Permission::create(['name' => 'edit_products', 'display_name' => 'Edit Products']);
         Permission::create(['name' => 'delete_products', 'display_name' => 'Delete Products']);

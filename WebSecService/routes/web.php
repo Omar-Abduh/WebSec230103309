@@ -159,6 +159,11 @@ Route::get('/products', [ProductsController::class, 'index'])->name('products.in
 Route::get('products/edit/{products?}', [ProductsController::class, 'edit'])->name('products.edit');
 Route::post('products/save/{products?}', [ProductsController::class, 'store'])->name('products.save');
 Route::get('products/delete/{products}', [ProductsController::class, 'destroy'])->name('products.delete');
+Route::get('products/cart', [ProductsController::class, 'viewCart'])->name('products.viewCart');
+Route::get('products/add-to-cart/{product}', [ProductsController::class, 'addToCart'])->name('products.addToCart');
+Route::patch('products/update-cart/{id}', [ProductsController::class, 'updateCart'])->name('products.updateCart');
+Route::post('products/purchase', [ProductsController::class, 'purchase'])->name('products.purchase');
+Route::get('products/bought', [ProductsController::class, 'viewBoughtProducts'])->name('products.viewBoughtProducts');
 
 // Users index
 Route::get('/users', [UserController::class, 'index'])->middleware('can:show_users')->name('users.index');
