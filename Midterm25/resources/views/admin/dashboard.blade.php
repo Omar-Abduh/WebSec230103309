@@ -1,4 +1,4 @@
-<x-admin-layout>
+<x-app-layout>
     <x-slot name="title">
         {{ __('Admin Dashboard') }}
     </x-slot>
@@ -17,4 +17,4 @@
             </div>
         </div>
     </div>
-</x-admin-layout>
+</x-app-layout>
