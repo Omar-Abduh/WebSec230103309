@@ -3,8 +3,12 @@
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,7 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
+// Admin routes
 Route::middleware(['auth', 'admin'])->group(function () {
     // Roles
     Route::get('/roles', [RoleController::class, 'index'])->name('role.index');
@@ -46,4 +50,25 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::patch('/permission/edit/{permission}', [PermissionController::class, 'update'])->name('permission.update');
     Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy'])->name('permission.delete');
 });
+
+// Admin & Employee routes
+Route::middleware(['auth', 'admin_or_employee'])->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('user.index');
+    Route::get('/users/show', [UserController::class, 'show'])->name('user.show');
+    Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
+    Route::post('/user/create', [UserController::class, 'store'])->name('user.store');
+    Route::get('/user/edit/{user}', [UserController::class, 'edit'])->name('user.edit');
+    Route::patch('/user/edit/{user}', [UserController::class, 'update'])->name('user.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('user.delete');
+
+    // Access Control Panel
+    Route::get('/access-control-panel', function () {
+        $roles = count(Role::all());
+        $permissions = count(Permission::all());
+        $users = count(User::all());
+        return view('access-control-panel', compact('roles', 'permissions', 'users'));
+    })->name('access-control-panel');
+});
+
+// Auth routes
 require __DIR__ . '/auth.php';
