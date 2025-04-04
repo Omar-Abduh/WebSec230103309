@@ -21,7 +21,7 @@
             <div class="flex justify-center items-center mb-4">
                 <div>
                     <h3 class="text-lg font-semibold dark:text-gray-200">Access Control Panel Dashboard</h3>
-                    <p class="text-gray-500 dark:text-gray-400">Welcome to Access Control Panel {{ Auth::user()->name }}
+                    <p class="text-gray-500 dark:text-gray-400">Welcome to Access Control Panel {{ Auth::user()->name }} 👋
                     </p>
                 </div>
             </div>
