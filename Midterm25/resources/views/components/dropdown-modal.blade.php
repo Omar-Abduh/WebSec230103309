@@ -7,10 +7,12 @@
     'triggerText' => 'Assign Permission',
     'modalWidth' => 'sm:max-w-lg',
     'role' => null, // Add role prop
-    'assignRoute' => '' // Add route prop for form submission
+    'user' => null, // Add user prop for direct permissions
+    'assignRoute' => null, // Allow route prop to be null for flexibility
+    'directPermissions' => [] // Add directPermissions prop
 ])
 
-<div x-data="dropdownModal(@js($options))" x-init="init()">
+<div x-data="dropdownModal(@js($options), @js($directPermissions))" x-init="init()">
     <style>
         [x-cloak] {
             display: none !important;
@@ -47,7 +49,7 @@
             <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div class="mt-3 text-center sm:mt-0 sm:text-left">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        Assign Permissions to {{ $role->name }}
+                        Assign Permissions to {{ $role ? $role->name : ($user ? $user->name : 'Entity') }}
                     </h3>
                     
                     <!-- Search Input -->
@@ -101,7 +103,7 @@
             </div>
             
             <!-- Modal Footer with form submission -->
-            <form method="POST" action="{{ $assignRoute }}" class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-end gap-3">
+            <form method="POST" action="{{ $assignRoute ?? '#' }}" class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-end gap-3">
                 @csrf
                 <input type="hidden" name="permissions" x-bind:value="selectedValues()">
                 
@@ -119,7 +121,7 @@
 </div>
 
 <script>
-function dropdownModal(initialOptions = []) {
+function dropdownModal(initialOptions = [], initialDirectPermissions = []) {
     return {
         options: [],
         selected: [],
@@ -133,12 +135,21 @@ function dropdownModal(initialOptions = []) {
                 text: option.text || option.name,
                 selected: option.selected || false
             }));
-            
+
             this.selected = this.options
                 .map((option, index) => option.selected ? index : null)
                 .filter(index => index !== null);
-            
+
             this.filteredOptions = this.options;
+
+            // Handle directPermissions
+            initialDirectPermissions.forEach(permission => {
+                const index = this.options.findIndex(option => option.value === permission);
+                if (index !== -1) {
+                    this.options[index].selected = true;
+                    this.selected.push(index);
+                }
+            });
         },
         onSearch: debounce(function(e) {
             const searchTerm = e.target.value.toLowerCase();
