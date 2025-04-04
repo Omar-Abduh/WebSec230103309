@@ -46,6 +46,7 @@
                         <tr>
                             <th class="p-4">#</th>
                             <th class="p-4">Permission</th>
+                            <th class="p-4">Roles</th>
                             <th class="p-4">Updated At</th>
                             <th class="p-4">Created At</th>
                             <th class="p-4"></th>
@@ -57,6 +58,19 @@
 
                                 <td class="p-4">{{ $permission->id }}</td>
                                 <td class="p-4">{{ $permission->name }}</td>
+                                <td class="p-4">
+                                    @if ($permission->roles->isEmpty())
+                                        <span class="inline-block bg-red-200 dark:bg-red-700 text-red-800 dark:text-red-300 text-sm px-2 py-1 rounded-lg">
+                                            No Roles
+                                        </span>
+                                    @else
+                                        @foreach ($permission->roles as $role)
+                                            <span class="inline-block bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 text-sm px-2 py-1 rounded-lg mr-1">
+                                                {{ $role->name }}
+                                            </span>
+                                        @endforeach
+                                    @endif
+                                </td>
                                 <td class="p-4">{{ $permission->updated_at->format('d M Y') }}</td>
                                 <td class="p-4">{{ $permission->created_at->format('d M Y') }}</td>
                                 <td class="p-4 flex gap-2">
