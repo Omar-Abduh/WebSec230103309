@@ -3,8 +3,11 @@
         {{ __('Permissions') }}
     </x-slot>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Permissions') }}
+        <a href="{{ route('access-control-panel') }}">
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Access Control Panel</h1>
+        </a>
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight text-center">
+            {{ __('Permissions Management') }}
         </h2>
     </x-slot>
     <div class="max-w-6xl mx-auto mt-8 p-4">
