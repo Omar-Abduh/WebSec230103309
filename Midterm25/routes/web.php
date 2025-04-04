@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     // Roles
     Route::get('/roles', [RoleController::class, 'index'])->name('role.index');
+    Route::get('/roles/show', [RoleController::class, 'show'])->name('role.show');
     Route::get('/role/create', [RoleController::class, 'create'])->name('role.create');
     Route::post('/role/create', [RoleController::class, 'store'])->name('role.store');
     Route::get('/role/edit/{role}', [RoleController::class, 'edit'])->name('role.edit');
@@ -49,6 +50,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/permission/edit/{permission}', [PermissionController::class, 'edit'])->name('permission.edit');
     Route::patch('/permission/edit/{permission}', [PermissionController::class, 'update'])->name('permission.update');
     Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy'])->name('permission.delete');
+
+    // Assign permissions to roles
+    Route::get('/role/{role}/permissions', [RoleController::class, 'permissions'])->name('role.permissions');
+    Route::delete('/role/{role}/{permission}/permissions', [RoleController::class, 'remove_permissions'])->name('role.permissions.remove');
+    Route::post('/role/{role}/permissions-assign', [RoleController::class, 'assign_permissions'])->name('role.permissions.assign');
 });
 
 // Admin & Employee routes
