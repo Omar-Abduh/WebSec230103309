@@ -60,14 +60,28 @@
                                 <td class="p-4">{{ $permission->name }}</td>
                                 <td class="p-4">
                                     @if ($permission->roles->isEmpty())
-                                        <span class="inline-block bg-red-200 dark:bg-red-700 text-red-800 dark:text-red-300 text-sm px-2 py-1 rounded-lg">
+                                        <span
+                                            class="inline-block bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 text-sm px-2 py-1 rounded-lg">
                                             No Roles
                                         </span>
                                     @else
                                         @foreach ($permission->roles as $role)
-                                            <span class="inline-block bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 text-sm px-2 py-1 rounded-lg mr-1">
-                                                {{ $role->name }}
-                                            </span>
+                                            @if ($role->name == 'Admin')
+                                                <span
+                                                    class="inline-block bg-gray-200 dark:bg-red-700 text-gray-800 dark:text-red-300 text-sm px-2 py-1 rounded-lg mr-1">
+                                                    {{ $role->name }}
+                                                </span>
+                                            @elseif ($role->name == 'Employee')
+                                                <span
+                                                    class="inline-block bg-gray-200 dark:bg-green-700 text-gray-800 dark:text-green-300 text-sm px-2 py-1 rounded-lg mr-1">
+                                                    {{ $role->name }}
+                                                </span>
+                                            @elseif ($role->name == 'Customer')
+                                                <span
+                                                    class="inline-block bg-gray-200 dark:bg-blue-700 text-gray-800 dark:text-blue-300 text-sm px-2 py-1 rounded-lg mr-1">
+                                                    {{ $role->name }}
+                                                </span>
+                                            @endif
                                         @endforeach
                                     @endif
                                 </td>
