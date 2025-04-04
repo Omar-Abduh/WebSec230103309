@@ -17,12 +17,15 @@
             <div class="flex justify-between items-center mb-4">
                 <div>
                     <h3 class="text-lg font-semibold dark:text-gray-200">Role List</h3>
-                    <p class="text-gray-500 dark:text-gray-400">Review each person before edit</p>
+                    <p class="text-gray-500 dark:text-gray-400">Total Roles {{ count($roles_total) }}</p>
                 </div>
                 <div class="flex gap-2">
-                    <button
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">View
-                        All</button>
+                    <a href="{{ route('role.show') }}">
+                        <button
+                            class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">View
+                            All
+                        </button>
+                    </a>
                     <a href="{{ route('role.create') }}">
                         <button
                             class="px-4 py-2 bg-gray-800 dark:bg-gray-700 text-white rounded-lg flex items-center gap-2 hover:bg-gray-900 dark:hover:bg-gray-600">
@@ -43,6 +46,7 @@
                         <tr>
                             <th class="p-4">#</th>
                             <th class="p-4">Role</th>
+                            <th class="p-4">Permissions</th>
                             <th class="p-4">Updated At</th>
                             <th class="p-4">Created At</th>
                             <th class="p-4"></th>
@@ -54,6 +58,17 @@
 
                                 <td class="p-4">{{ $role->id }}</td>
                                 <td class="p-4">{{ $role->name }}</td>
+                                <td class="p-4">
+                                    <a href="{{ route('role.permissions', $role->id) }}" class="flex items-center gap-2">
+                                        {{ count($role->permissions) }}
+                                        <button
+                                        class="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                                        </svg>
+                                    </button>
+                                    </a>
+                                </td>
                                 <td class="p-4">{{ $role->updated_at->format('d M Y') }}</td>
                                 <td class="p-4">{{ $role->created_at->format('d M Y') }}</td>
                                 <td class="p-4 flex gap-2">
@@ -78,12 +93,26 @@
                 </table>
             </div>
             <div class="flex justify-between items-center mt-4">
-                <p class="text-sm text-gray-500 dark:text-gray-400">Page 1 of 10</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Page {{ $roles->currentPage() }} of {{ $roles->lastPage() }}
+                </p>
                 <div class="flex gap-2">
-                    <button
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">Previous</button>
-                    <button
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">Next</button>
+                    @if ($roles->currentPage() > 1)
+                        <a href="{{ $roles->previousPageUrl() }}">
+                            <button
+                                class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                                Previous
+                            </button>
+                        </a>
+                    @endif
+                    @if ($roles->currentPage() < $roles->lastPage())
+                        <a href="{{ $roles->nextPageUrl() }}">
+                            <button
+                                class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                                Next
+                            </button>
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>
