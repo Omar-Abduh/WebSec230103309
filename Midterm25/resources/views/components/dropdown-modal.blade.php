@@ -4,7 +4,7 @@
     'placeholder' => 'Search permissions...',
     'name' => 'permissions[]',
     'triggerClass' => '',
-    'triggerText' => 'Assign Permission',
+    'triggerText' => null,
     'modalWidth' => 'sm:max-w-lg',
     'role' => null, // Add role prop
     'user' => null, // Add user prop for direct permissions
@@ -49,7 +49,7 @@
             <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div class="mt-3 text-center sm:mt-0 sm:text-left">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        Assign Permissions to {{ $role ? $role->name : ($user ? $user->name : 'Entity') }}
+                        {{ $triggerText }} to {{ $role ? $role->name : ($user ? $user->name : 'Entity') }}
                     </h3>
                     
                     <!-- Search Input -->
