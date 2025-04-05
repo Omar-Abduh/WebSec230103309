@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -97,6 +98,59 @@ class UserController extends Controller
         return redirect()->route('user.index')->with([
             'success' => 'User updated successfully.',
             'success_description' => 'The user details have been updated.'
+        ]);
+    }
+    
+    public function permissions(User $user)
+    {
+        $permissions_total = Permission::whereNotIn('name', $user->getAllPermissions()->pluck('name'))->get();
+        $permissions = Permission::whereIn('name', $user->getAllPermissions()->pluck('name'))->paginate(8);
+        return view('users.permissions', compact('user', 'permissions_total', 'permissions'));
+    }
+
+    public function assignDirectPermissions(Request $request, User $user)
+    {
+        $request->validate([
+            'permissions' => 'required|string'
+        ]);
+        
+        // Convert comma-separated string to array
+        $permissionNames = explode(',', $request->permissions);
+
+        // Assign each permission by name
+        foreach ($permissionNames as $permissionName) {
+            $user->givePermissionTo(trim($permissionName)); // trim to remove any whitespace
+        }
+
+        return redirect()->route('user.permissions', $user->id)->with([
+            'success' => 'Permissions assigned successfully.',
+            'success_description' => 'The selected permissions have been assigned to the user.'
+        ]);
+    }
+    
+    public function removePermission(User $user, Permission $permission)
+    {
+        // Check if any of the user's roles have this permission
+        foreach ($user->roles as $role) {
+            if ($role->hasPermissionTo($permission)) {
+                return redirect()->route('user.permissions', $user->id)->with([
+                    'error' => 'Permission cannot be removed.',
+                    'error_description' => 'The permission is associated with one of the '.$role->name.'\'s roles.'
+                ]);
+            }
+        }
+
+        if ($user->hasPermissionTo($permission)) {
+            $user->revokePermissionTo($permission);
+            return redirect()->route('user.permissions', $user->id)->with([
+                'success' => 'Permission removed successfully.',
+                'success_description' => 'The selected permission has been removed from the user.'
+            ]);
+        }
+
+        return redirect()->route('user.permissions', $user->id)->with([
+            'error' => 'Permission not found.',
+            'error_description' => 'The user does not have the specified permission.'
         ]);
     }
 
