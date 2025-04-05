@@ -15,6 +15,7 @@
             <div class="flex justify-between items-center mb-4">
                 <div>
                     <h3 class="text-lg font-semibold dark:text-gray-200">{{ $user->name }}</h3>
+                    <p class="text-gray-500 dark:text-gray-400">Direct Permissions</p>
                     <p class="text-gray-500 dark:text-gray-400">Total Permissions: {{ $user->getAllPermissions()->count() }}</p>
                 </div>
                 <div class="flex gap-2">
