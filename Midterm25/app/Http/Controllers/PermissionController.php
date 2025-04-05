@@ -38,10 +38,17 @@ class PermissionController extends Controller
             'name' => 'required|unique:permissions,name',
         ]);
 
-        permission::create(['name' => $request->name]);
+        $permission = Permission::create(['name' => $request->name]);
+
+        // if ($request->role) {
+
+        // }
+        if (is_array($request->role)) {
+            $permission->syncRoles($request->role);
+        }
 
         return redirect()->route('permission.index')->with([
-            'success' => 'permission created successfully.',
+            'success' => 'Permission created successfully.',
             'success_description' => 'The permission has been added to the system.'
         ]);
     }
@@ -49,7 +56,8 @@ class PermissionController extends Controller
     // Edit permission
     public function edit(Permission $permission)
     {
-        return view('admin.permissions.edit', compact('permission'));
+        $roles = Role::all();
+        return view('admin.permissions.edit', compact('permission', 'roles'));
     }
 
     // Update permission
@@ -59,10 +67,16 @@ class PermissionController extends Controller
             'name' => 'required|unique:permissions,name,' . $permission->id,
         ]);
 
-        $permission->update(['name' => $request->name]);
+        $permission->update([
+            'name' => $request->name,
+        ]);
+
+        if (is_array($request->role)) {
+            $permission->syncRoles($request->role);
+        }
 
         return redirect()->route('permission.index')->with([
-            'success' => 'permission updated successfully.',
+            'success' => 'Permission updated successfully.',
             'success_description' => 'The permission details have been updated.'
         ]);
     }
