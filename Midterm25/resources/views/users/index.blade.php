@@ -48,6 +48,7 @@
                             <th class="p-4">Name</th>
                             <th class="p-4">Email</th>
                             <th class="p-4">Role</th>
+                            <th class="p-4"># Permissions</th>
                             <th class="p-4">Updated At</th>
                             <th class="p-4">Created At</th>
                             <th class="p-4"></th>
@@ -60,21 +61,36 @@
                                 <td class="p-4">{{ $user->id }}</td>
                                 <td class="p-4">{{ $user->name }}</td>
                                 <td class="p-4">{{ $user->email }}</td>
+
                                 <td class="p-4">
                                     @if ($user->hasRole('Admin'))
                                         <span
-                                            class=" bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">Admin</span>
+                                        class="inline-block bg-gray-200 dark:bg-red-700 text-gray-800 dark:text-red-300 text-sm px-2 py-1 rounded-lg mr-1">Admin</span>
                                     @elseif ($user->hasRole('Employee'))
                                         <span
-                                            class="bg-green-500  text-white px-2 py-1 rounded-full text-xs font-semibold">Employee</span>
+                                        class="inline-block bg-gray-200 dark:bg-green-700 text-gray-800 dark:text-green-300 text-sm px-2 py-1 rounded-lg mr-1">Employee</span>
                                     @elseif ($user->hasRole('Customer'))
                                         <span
-                                            class=" bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-semibold">Customer</span>
+                                        class="inline-block bg-gray-200 dark:bg-blue-700 text-gray-800 dark:text-blue-300 text-sm px-2 py-1 rounded-lg mr-1">Customer</span>
                                     @else
                                         <span
-                                            class="bg-gray-500 text-white px-2 py-1 rounded-full text-xs font-semibold">No
+                                        class="inline-block bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 text-sm px-2 py-1 rounded-lg mr-1">No
                                             Role</span>
                                     @endif
+                                </td>
+                                <td class="p-4">
+                                    <a href="{{ route('user.permissions', $user->id) }}"
+                                        class="flex items-center gap-2">
+                                        {{ $user->getAllPermissions()->count() }}
+                                        <button
+                                            class="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                                            </svg>
+                                        </button>
+                                    </a>
                                 </td>
                                 <td class="p-4">{{ $user->updated_at->format('d M Y') }}</td>
                                 <td class="p-4">{{ $user->created_at->format('d M Y') }}</td>
