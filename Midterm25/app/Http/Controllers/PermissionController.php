@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class PermissionController extends Controller
 {
@@ -25,12 +26,14 @@ class PermissionController extends Controller
     // Create permission
     public function create()
     {
-        return view('admin.permissions.create');
+        $roles = Role::all();
+        return view('admin.permissions.create', compact('roles'));
     }
 
     // Store permission
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'name' => 'required|unique:permissions,name',
         ]);
