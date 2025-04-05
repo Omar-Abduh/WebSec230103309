@@ -31,6 +31,7 @@ class PermissionsSeeder extends Seeder
         Permission::create(['name' => 'Remove Permissions']);
         Permission::create(['name' => 'Create Employees']);
         Permission::create(['name' => 'Show Employees']);
+        Permission::create(['name' => 'Show Users']);
         Permission::create(['name' => 'Edit Employees']);
         Permission::create(['name' => 'Remove Employees']);
         Permission::create(['name' => 'Create Customers']);
@@ -75,7 +76,8 @@ class PermissionsSeeder extends Seeder
             'Show Products',
             'Edit Products',
             'Remove Products',
-            'Limit Products'
+            'Limit Products',
+            'Show Users'
 
         );
         $employee_role->syncPermissions(
