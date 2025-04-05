@@ -61,10 +61,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['auth', 'admin_or_employee'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
     Route::get('/users/show', [UserController::class, 'show'])->name('user.show');
+    Route::get('/user/{user}/permissions', [UserController::class, 'permissions'])->name('user.permissions');
+    Route::post('/user/{user}/permissions-assign', [UserController::class, 'assignDirectPermissions'])->name('user.direct.permissions.assign');
+    Route::delete('/user/{user}/{permission}/permissions', [UserController::class, 'removePermission'])->name('user.permissions.remove');
     Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
     Route::post('/user/create', [UserController::class, 'store'])->name('user.store');
-    Route::get('/user/edit/{user}', [UserController::class, 'edit'])->name('user.edit');
-    Route::patch('/user/edit/{user}', [UserController::class, 'update'])->name('user.update');
+    Route::get('/user/{user}/edit', [UserController::class, 'edit'])->name('user.edit');
+    Route::patch('/user/{user}/edit', [UserController::class, 'update'])->name('user.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('user.delete');
 
     // Access Control Panel
