@@ -34,6 +34,7 @@ class UsersController extends Controller
 
     public function create()
     {
+        if (!auth()->user()->hasPermissionTo('admin_users')) abort(401);
         $roles = Role::all();
 
         return view('users.create', compact('roles'));
@@ -41,7 +42,7 @@ class UsersController extends Controller
 
     public function user_store(Request $request)
     {
-        // dd($request->all());
+        if (!auth()->user()->hasPermissionTo('admin_users')) abort(401);
         $this->validate($request, [
             'name' => ['required', 'string', 'min:3'],
             'email' => ['required', 'email', 'unique:users'],
