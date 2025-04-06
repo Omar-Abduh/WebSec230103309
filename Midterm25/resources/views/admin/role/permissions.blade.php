@@ -21,9 +21,12 @@
                         {{ count($role->permissions) }}</p>
                 </div>
                 <div class="flex gap-2">
-                    <button
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">View
-                        All</button>
+                    <a href="{{ route('role.index') }}">
+                        <button
+                            class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Back
+                        </button>
+                    </a>
                     <x-dropdown-modal :options="$permissions_total->map(
                         fn($perm) => [
                             'value' => $perm->name,
