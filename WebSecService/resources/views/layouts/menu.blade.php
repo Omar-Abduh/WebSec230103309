@@ -27,7 +27,7 @@
                 @hasrole('Customer')
                     <li class="nav-item">
                         <div class="nav-link">
-                            Credits: {{ auth()->user()?->credit?->credit_amount . '$' ?? 'No Credit' }}
+                            Credits: {{ auth()->user()->credit->credit_amount . '$' ?? 'No Credit' }}
                         </div>
                     </li>
                 @endhasrole
