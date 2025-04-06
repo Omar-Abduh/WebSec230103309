@@ -34,6 +34,7 @@
                         <th scope="col">Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">Roles</th>
+                        <th scope="col">Credit</th>
                         <th scope="col"></th>
                     </tr>
                 </thead>
@@ -47,6 +48,14 @@
                                 @foreach ($user->roles as $role)
                                     <span class="badge bg-primary">{{ $role->name }}</span>
                                 @endforeach
+                            </td>
+                            <td scope="col">
+                                @if ($user->hasRole(['Admin', 'Employee']))
+                                    Credit For Customer
+                                @endif
+                                @if ($user->hasRole('Customer'))
+                                {{ $user->credit->credit_amount.'$' ?? 'N/A' }}
+                                @endif
                             </td>
                             <td scope="col">
                                 @can('edit_users')
@@ -74,6 +83,7 @@
                                         <span class="badge bg-primary">{{ $role->name }}</span>
                                     @endforeach
                                 </td>
+                                <td scope="col">{{ $user->credit->credit_amount.'$' ?? 'N/A' }}</td>
                                 <td scope="col">
                                     @can('edit_users')
                                         <a class="btn btn-primary" href='{{ route('users_edit', [$user->id]) }}'>Edit</a>
