@@ -27,13 +27,13 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', ''])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 // Admin routes
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     // Roles
     Route::get('/roles', [RoleController::class, 'index'])->name('role.index');
     Route::get('/roles/show', [RoleController::class, 'show'])->name('role.show');
@@ -58,7 +58,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 // Admin & Employee routes
-Route::middleware(['auth', 'admin_or_employee'])->group(function () {
+Route::middleware(['auth', 'verified', 'admin_or_employee'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
     Route::get('/users/show', [UserController::class, 'show'])->name('user.show');
     Route::get('/user/{user}/permissions', [UserController::class, 'permissions'])->name('user.permissions');
