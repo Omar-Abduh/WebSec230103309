@@ -49,4 +49,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function credit()
+    {
+        return $this->hasOne(UserCredit::class, 'user_id');
+    }
 }
