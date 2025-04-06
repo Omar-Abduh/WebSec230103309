@@ -19,6 +19,7 @@ class UsersController extends Controller
 
     use ValidatesRequests;
 
+    // list all user
     public function list(Request $request)
     {
         if (!auth()->user()->hasPermissionTo('show_users')) abort(401);
@@ -31,11 +32,43 @@ class UsersController extends Controller
         return view('users.list', compact('users'));
     }
 
+    public function create()
+    {
+        $roles = Role::all();
+
+        return view('users.create', compact('roles'));
+    }
+
+    public function user_store(Request $request)
+    {
+        // dd($request->all());
+        $this->validate($request, [
+            'name' => ['required', 'string', 'min:3'],
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'min:5'],
+            'role' => 'exists:roles,name|nullable',
+        ]);
+
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        if ($request->has('role')) {
+            $user->assignRole($request->role);
+        }
+        $user->save();
+
+
+        return redirect()->route('users');
+    }
+
+    // Resister view
     public function register(Request $request)
     {
         return view('users.register');
     }
 
+    // Resister logic
     public function doRegister(Request $request)
     {
 
@@ -55,16 +88,19 @@ class UsersController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password); //Secure
+        $user->assignRole('Customer');
         $user->save();
 
         return redirect('/');
     }
 
+    // Do login view
     public function login(Request $request)
     {
         return view('users.login');
     }
 
+    // Do Login logic
     public function doLogin(Request $request)
     {
 
@@ -77,6 +113,7 @@ class UsersController extends Controller
         return redirect('/');
     }
 
+    // Do Logout
     public function doLogout(Request $request)
     {
 
@@ -159,7 +196,7 @@ class UsersController extends Controller
 
         if (!auth()->user()->hasPermissionTo('delete_users')) abort(401);
 
-        //$user->delete();
+        $user->delete();
 
         return redirect()->route('users');
     }
