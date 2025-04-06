@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\ProductsController;
@@ -17,6 +18,11 @@ Route::get('users/delete/{user}', [UsersController::class, 'delete'])->name('use
 Route::get('users/edit_password/{user?}', [UsersController::class, 'editPassword'])->name('edit_password');
 Route::post('users/save_password/{user}', [UsersController::class, 'savePassword'])->name('save_password');
 
+// Create User internally
+Route::get('/user/create', [UsersController::class, 'create'])->name('users.create');
+Route::post('/user/create', [UsersController::class, 'user_store'])->name('users.store');
+
+
 
 
 Route::get('products', [ProductsController::class, 'list'])->name('products_list');
@@ -29,7 +35,7 @@ Route::get('/', function () {
 });
 
 Route::get('/multable', function (Request $request) {
-    $j = $request->number??5;
+    $j = $request->number ?? 5;
     $msg = $request->msg;
     return view('multable', compact("j", "msg"));
 });
