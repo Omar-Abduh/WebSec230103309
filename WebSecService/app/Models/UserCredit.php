@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserCredit extends Model
 {
-    //
+    protected $fillable = [
+        'credit_amount',
+    ];
 }
