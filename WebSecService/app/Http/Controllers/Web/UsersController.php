@@ -13,6 +13,7 @@ use Artisan;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserCredit;
 
 class UsersController extends Controller
 {
@@ -59,6 +60,12 @@ class UsersController extends Controller
         }
         $user->save();
 
+        if ($request->role === 'Customer') {
+            UserCredit::create([
+                'user_id' => $user->id,
+                'credit_amount' => 0,
+            ]);
+        }
 
         return redirect()->route('users');
     }
@@ -91,6 +98,11 @@ class UsersController extends Controller
         $user->password = bcrypt($request->password); //Secure
         $user->assignRole('Customer');
         $user->save();
+
+        UserCredit::create([
+            'user_id' => $user->id,
+            'credit_amount' => 0,
+        ]);
 
         return redirect('/');
     }
@@ -180,12 +192,18 @@ class UsersController extends Controller
 
         if (auth()->user()->hasPermissionTo('admin_users')) {
 
-            $user->syncRoles($request->roles);
+            $user->syncRoles($request->role);
             $user->syncPermissions($request->permissions);
 
             Artisan::call('cache:clear');
         }
 
+        if ($request->role === 'Customer') {
+            UserCredit::create([
+                'user_id' => $user->id,
+                'credit_amount' => 0,
+            ]);
+        }
         //$user->syncRoles([1]);
         //Artisan::call('cache:clear');
 
