@@ -11,6 +11,14 @@
             @endcan
         </div>
     </div>
+
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <form>
         <div class="row">
             <div class="col col-sm-2">
@@ -63,22 +71,23 @@
                             <div class="col-8">
                                 <h3>{{ $product->name }}</h3>
                             </div>
-                            <div class="col col-2">
-                                @can('edit_products')
+                            @can('buy_products')
+                                <div class="col col-4">
+                                    <a href="{{ route('products.buy', $product->id) }}"
+                                        class="btn btn-success form-control">Buy</a>
+                                </div>
+                            @endcan
+                            @can('edit_products')
+                                <div class="col col-2">
                                     <a href="{{ route('products_edit', $product->id) }}"
                                         class="btn btn-success form-control">Edit</a>
-                                @endcan
-                            </div>
-                            <div class="col col-2">
-                                @can('delete_products')
+                                </div>
+                            @endcan
+                            @can('delete_products')
+                                <div class="col col-2">
                                     <a href="{{ route('products_delete', $product->id) }}"
                                         class="btn btn-danger form-control">Delete</a>
-                                @endcan
-                            </div>
-                        </div>
-                        <div class="col col-2">
-                            @can('buy_products')
-                                <a href="" class="btn btn-success form-control">Buy</a>
+                                </div>
                             @endcan
                         </div>
 
