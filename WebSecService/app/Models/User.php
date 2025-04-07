@@ -54,4 +54,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserCredit::class, 'user_id');
     }
+
+    public function boughtProducts()
+    {
+        return $this->belongsToMany(Product::class, 'bought_products', 'user_id', 'product_id')
+        ->withTimestamps();
+    }
 }
