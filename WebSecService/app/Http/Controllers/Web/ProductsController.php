@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use DB;
 
 use App\Http\Controllers\Controller;
+use App\Models\BoughtProducts;
 use App\Models\Product;
 use App\Models\UserCredit;
 use Illuminate\Support\Facades\Auth;
@@ -95,7 +96,19 @@ class ProductsController extends Controller
 			'amount' => $product->amount - 1,
 		]);
 
+		BoughtProducts::create([
+			'user_id' => Auth::id(),
+			'product_id' => $product->id,
+		]);
+
 		return redirect()->route('products_list')->with('success', 'Product purchased successfully!');
+	}
+
+	public function bought_products()
+	{
+		$boughtProducts = BoughtProducts::where('user_id', Auth::id())->get();
+		
+		return view('products.bought', compact('boughtProducts'));
 	}
 
 	public function delete(Request $request, Product $product)
