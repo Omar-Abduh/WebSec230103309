@@ -21,6 +21,8 @@ Route::post('users/save_password/{user}', [UsersController::class, 'savePassword
 // Create User internally
 Route::get('/user/create', [UsersController::class, 'create'])->name('users.create');
 Route::post('/user/create', [UsersController::class, 'user_store'])->name('users.store');
+Route::get('/user/{user}/charge-credit', [UsersController::class, 'charge_credit'])->name('users.charge.credit');
+Route::post('/user/{user}/charge-credit', [UsersController::class, 'charge_credit_save'])->name('users.charge.credit.save');
 
 
 
