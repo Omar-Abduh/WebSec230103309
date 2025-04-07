@@ -32,6 +32,10 @@
             <input type="numeric" class="form-control" placeholder="Price" name="price" required value="{{$product->price}}">
         </div>
         <div class="col-6">
+            <label for="model" class="form-label">Amount:</label>
+            <input type="numeric" class="form-control" placeholder="Amount" name="amount" required value="{{$product->amount}}">
+        </div>
+        <div class="col-6">
             <label for="model" class="form-label">Photo:</label>
             <input type="text" class="form-control" placeholder="Photo" name="photo" required value="{{$product->photo}}">
         </div>
