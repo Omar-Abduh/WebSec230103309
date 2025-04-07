@@ -54,7 +54,7 @@
                                     Credit For Customer
                                 @endif
                                 @if ($user->hasRole('Customer'))
-                                {{ $user->credit->credit_amount.'$' ?? 'N/A' }}
+                                    {{ $user->credit->credit_amount . '$' ?? 'N/A' }}
                                 @endif
                             </td>
                             <td scope="col">
@@ -83,19 +83,12 @@
                                         <span class="badge bg-primary">{{ $role->name }}</span>
                                     @endforeach
                                 </td>
-                                <td scope="col">{{ $user->credit->credit_amount.'$' ?? 'N/A' }}</td>
-                                <td scope="col">
-                                    @can('edit_users')
-                                        <a class="btn btn-primary" href='{{ route('users_edit', [$user->id]) }}'>Edit</a>
-                                    @endcan
-                                    @can('admin_users')
-                                        <a class="btn btn-primary" href='{{ route('edit_password', [$user->id]) }}'>Change
-                                            Password</a>
-                                    @endcan
-                                    @can('delete_users')
-                                        <a class="btn btn-danger" href='{{ route('users_delete', [$user->id]) }}'>Delete</a>
-                                    @endcan
-                                </td>
+                                <td scope="col">{{ $user->credit->credit_amount . '$' ?? 'N/A' }}</td>
+                                @can('add_credits')
+                                    <td scope="col">
+                                        <a class="btn btn-primary" href="{{ route('users.charge.credit', $user->id) }}">Charge Credit</a>
+                                    </td>
+                                @endcan
                             </tr>
                         @endif
                     @endforeach
