@@ -231,6 +231,23 @@ class UsersController extends Controller
         return view('users.edit_password', compact('user'));
     }
 
+    public function charge_credit(User $user){
+        return view ('users.charge_credit', compact('user'));
+    }
+
+    public function charge_credit_save(Request $request, User $user){
+        if (!auth()->user()->hasPermissionTo('add_credits')) abort(401);
+        $request->validate([
+            'credit_amount' => "required|numeric|min:1"
+        ]);
+
+        $userCredit = $user->credit;
+        $userCredit->credit_amount += $request->credit_amount;
+        $userCredit->save();
+
+        return redirect(route('users'));
+    }
+
     public function savePassword(Request $request, User $user)
     {
 
