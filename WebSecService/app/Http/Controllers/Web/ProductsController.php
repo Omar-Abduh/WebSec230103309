@@ -68,6 +68,7 @@ class ProductsController extends Controller
 			'model' => ['required', 'string', 'max:256'],
 			'description' => ['required', 'string', 'max:1024'],
 			'price' => ['required', 'numeric'],
+			'amount' => ['required', 'numeric'],
 		]);
 
 		$product = $product ?? new Product();
@@ -83,8 +84,15 @@ class ProductsController extends Controller
 			return view('products.insufficient_credit', compact('product'));
 		}
 
+		if ($product->amount == 0){
+			return redirect()->route('products_list')->with('error', 'Product Amount is 0!');
+		}
 		Auth::user()->credit->update([
 			'credit_amount' => Auth::user()->credit->credit_amount - $product->price,
+		]);
+
+		$product->update([
+			'amount' => $product->amount - 1,
 		]);
 
 		return redirect()->route('products_list')->with('success', 'Product purchased successfully!');
