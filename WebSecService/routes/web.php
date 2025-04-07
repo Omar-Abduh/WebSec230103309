@@ -30,6 +30,7 @@ Route::get('products/edit/{product?}', [ProductsController::class, 'edit'])->nam
 Route::post('products/save/{product?}', [ProductsController::class, 'save'])->name('products_save');
 Route::get('products/delete/{product}', [ProductsController::class, 'delete'])->name('products_delete');
 Route::get('products/buy/{product}', [ProductsController::class, 'buy'])->name('products.buy');
+Route::get('bought-products', [ProductsController::class, 'bought_products'])->name('products.bought');
 
 Route::get('/', function () {
     return view('welcome');

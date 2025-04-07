@@ -26,6 +26,9 @@
             @auth
                 @hasrole('Customer')
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('products.bought') }}">Bought Products</a>
+                    </li>
+                    <li class="nav-item">
                         <div class="nav-link">
                             Credits: {{ auth()->user()->credit->credit_amount . '$' ?? 'No Credit' }}
                         </div>
