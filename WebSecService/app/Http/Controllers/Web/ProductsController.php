@@ -85,7 +85,7 @@ class ProductsController extends Controller
 			return view('products.insufficient_credit', compact('product'));
 		}
 
-		if ($product->amount == 0){
+		if ($product->amount == 0) {
 			return redirect()->route('products_list')->with('error', 'Product Amount is 0!');
 		}
 		Auth::user()->credit->update([
@@ -107,8 +107,28 @@ class ProductsController extends Controller
 	public function bought_products()
 	{
 		$boughtProducts = BoughtProducts::where('user_id', Auth::id())->get();
-		
+
 		return view('products.bought', compact('boughtProducts'));
+	}
+
+	public function return_products(Product $product, BoughtProducts $id)
+	{
+		
+		// dd($product);
+		Auth::user()->credit->update([
+			'credit_amount' => Auth::user()->credit->credit_amount + $product->price,
+		]);
+
+		$product->update([
+			'amount' => $product->amount + 1,
+		]);
+
+		// dd(Auth::user()->boughtProducts);
+		// dd($product->id);
+		DB::table('bought_products')->where('product_id', $product->id)->delete();
+		// $product->delete();
+
+		return redirect()->back();
 	}
 
 	public function delete(Request $request, Product $product)
