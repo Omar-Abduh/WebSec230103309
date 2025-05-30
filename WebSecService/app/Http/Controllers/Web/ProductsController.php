@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Web;
 
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -7,137 +6,71 @@ use Illuminate\Http\Request;
 use DB;
 
 use App\Http\Controllers\Controller;
-use App\Models\BoughtProducts;
 use App\Models\Product;
-use App\Models\UserCredit;
-use Illuminate\Support\Facades\Auth;
 
-class ProductsController extends Controller
-{
+class ProductsController extends Controller {
 
 	use ValidatesRequests;
 
 	public function __construct()
-	{
-		$this->middleware('auth:web')->except('list');
-	}
+    {
+        $this->middleware('auth:web')->except('list');
+        /*123*/
+    }
 
-	public function list(Request $request)
-	{
+	public function list(Request $request) {
 
 		$query = Product::select("products.*");
 
-		$query->when(
-			$request->keywords,
-			fn($q) => $q->where("name", "like", "%$request->keywords%")
-		);
+		$query->when($request->keywords, 
+		fn($q)=> $q->where("name", "like", "%$request->keywords%"));
 
-		$query->when(
-			$request->min_price,
-			fn($q) => $q->where("price", ">=", $request->min_price)
-		);
-
-		$query->when($request->max_price, fn($q) =>
+		$query->when($request->min_price, 
+		fn($q)=> $q->where("price", ">=", $request->min_price));
+		
+		$query->when($request->max_price, fn($q)=> 
 		$q->where("price", "<=", $request->max_price));
-
-		$query->when(
-			$request->order_by,
-			fn($q) => $q->orderBy($request->order_by, $request->order_direction ?? "ASC")
-		);
+		
+		$query->when($request->order_by, 
+		fn($q)=> $q->orderBy($request->order_by, $request->order_direction??"ASC"));
 
 		$products = $query->get();
 
 		return view('products.list', compact('products'));
 	}
 
-	public function edit(Request $request, Product $product = null)
-	{
+	public function edit(Request $request, Product $product = null) {
 
-		if (!auth()->user()) return redirect('/');
+		if(!auth()->user()) return redirect('/');
 
-		$product = $product ?? new Product();
+		$product = $product??new Product();
 
 		return view('products.edit', compact('product'));
 	}
 
-	public function save(Request $request, Product $product = null)
-	{
+	public function save(Request $request, Product $product = null) {
 
 		$this->validate($request, [
-			'code' => ['required', 'string', 'max:32'],
-			'name' => ['required', 'string', 'max:128'],
-			'model' => ['required', 'string', 'max:256'],
-			'description' => ['required', 'string', 'max:1024'],
-			'price' => ['required', 'numeric'],
-			'amount' => ['required', 'numeric'],
-		]);
+	        'code' => ['required', 'string', 'max:32'],
+	        'name' => ['required', 'string', 'max:128'],
+	        'model' => ['required', 'string', 'max:256'],
+	        'description' => ['required', 'string', 'max:1024'],
+	        'price' => ['required', 'numeric'],
+	    ]);
 
-		$product = $product ?? new Product();
+		$product = $product??new Product();
 		$product->fill($request->all());
 		$product->save();
 
 		return redirect()->route('products_list');
 	}
 
-	public function buy(Request $request, Product $product)
-	{
-		if ($product->price > Auth::user()->credit->credit_amount) {
-			return view('products.insufficient_credit', compact('product'));
-		}
+	public function delete(Request $request, Product $product) {
 
-		if ($product->amount == 0) {
-			return redirect()->route('products_list')->with('error', 'Product Amount is 0!');
-		}
-		Auth::user()->credit->update([
-			'credit_amount' => Auth::user()->credit->credit_amount - $product->price,
-		]);
-
-		$product->update([
-			'amount' => $product->amount - 1,
-		]);
-
-		BoughtProducts::create([
-			'user_id' => Auth::id(),
-			'product_id' => $product->id,
-		]);
-
-		return redirect()->route('products_list')->with('success', 'Product purchased successfully!');
-	}
-
-	public function bought_products()
-	{
-		$boughtProducts = BoughtProducts::where('user_id', Auth::id())->get();
-
-		return view('products.bought', compact('boughtProducts'));
-	}
-
-	public function return_products(Product $product, BoughtProducts $id)
-	{
-		
-		// dd($product);
-		Auth::user()->credit->update([
-			'credit_amount' => Auth::user()->credit->credit_amount + $product->price,
-		]);
-
-		$product->update([
-			'amount' => $product->amount + 1,
-		]);
-
-		// dd(Auth::user()->boughtProducts);
-		// dd($product->id);
-		DB::table('bought_products')->where('product_id', $product->id)->delete();
-		// $product->delete();
-
-		return redirect()->back();
-	}
-
-	public function delete(Request $request, Product $product)
-	{
-
-		if (!auth()->user()->hasPermissionTo('delete_products')) abort(401);
+		if(!auth()->user()->hasPermissionTo('delete_products')) abort(401);
 
 		$product->delete();
 
 		return redirect()->route('products_list');
 	}
-}
+} 

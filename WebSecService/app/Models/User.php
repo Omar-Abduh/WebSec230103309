@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
     use HasRoles;
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -48,17 +48,5 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    public function credit()
-    {
-        return $this->hasOne(UserCredit::class, 'user_id');
-    }
-
-    public function boughtProducts()
-    {
-        return $this->belongsToMany(Product::class, 'bought_products', 'user_id', 'product_id')
-        ->withTimestamps()
-        ->withPivot('id');
     }
 }

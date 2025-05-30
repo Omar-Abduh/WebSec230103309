@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Web;
 
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -8,147 +7,103 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
+use Laravel\Socialite\Facades\Socialite;
 use DB;
 use Artisan;
+use Carbon\Carbon;
 
+
+use App\Mail\VerificationEmail;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\UserCredit;
 
-class UsersController extends Controller
-{
+class UsersController extends Controller {
 
-    use ValidatesRequests;
+	use ValidatesRequests;
 
-    // list all user
-    public function list(Request $request)
-    {
-        if (!auth()->user()->hasPermissionTo('show_users')) abort(401);
+    public function list(Request $request) {
+        if(!auth()->user()->hasPermissionTo('show_users'))abort(401);
         $query = User::select('*');
-        $query->when(
-            $request->keywords,
-            fn($q) => $q->where("name", "like", "%$request->keywords%")
-        );
+        $query->when($request->keywords, 
+        fn($q)=> $q->where("name", "like", "%$request->keywords%"));
         $users = $query->get();
         return view('users.list', compact('users'));
     }
 
-    public function create()
-    {
-        if (!auth()->user()->hasPermissionTo('admin_users')) abort(401);
-        $roles = Role::all();
-
-        return view('users.create', compact('roles'));
-    }
-
-    public function user_store(Request $request)
-    {
-        if (!auth()->user()->hasPermissionTo('admin_users')) abort(401);
-        $this->validate($request, [
-            'name' => ['required', 'string', 'min:3'],
-            'email' => ['required', 'email', 'unique:users'],
-            'password' => ['required', 'min:5'],
-            'role' => 'exists:roles,name|nullable',
-        ]);
-
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-        if ($request->has('role')) {
-            $user->assignRole($request->role);
-        }
-        $user->save();
-
-        if ($request->role === 'Customer') {
-            UserCredit::create([
-                'user_id' => $user->id,
-                'credit_amount' => 0,
-            ]);
-        }
-
-        return redirect()->route('users');
-    }
-
-    // Resister view
-    public function register(Request $request)
-    {
+	public function register(Request $request) {
         return view('users.register');
     }
 
-    // Resister logic
-    public function doRegister(Request $request)
-    {
+    public function doRegister(Request $request) {
 
-        try {
-            $this->validate($request, [
-                'name' => ['required', 'string', 'min:5'],
-                'email' => ['required', 'email', 'unique:users'],
-                'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
-            ]);
-        } catch (\Exception $e) {
+    	try {
+    		$this->validate($request, [
+	        'name' => ['required', 'string', 'min:5'],
+	        'email' => ['required', 'email', 'unique:users'],
+	        'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
+	    	]);
+    	}
+    	catch(\Exception $e) {
 
-            return redirect()->back()->withInput($request->input())->withErrors('Invalid registration information.');
-        }
+    		return redirect()->back()->withInput($request->input())->withErrors('Invalid registration information.');
+    	}
 
+    	
+    	$user =  new User();
+	    $user->name = $request->name;
+	    $user->email = $request->email;
+	    $user->password = bcrypt($request->password); //Secure
+	    $user->save();
 
-        $user =  new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password); //Secure
-        $user->assignRole('Customer');
-        $user->save();
-
-        UserCredit::create([
-            'user_id' => $user->id,
-            'credit_amount' => 0,
-        ]);
-
+        $title = "Verification Link";
+        $token = Crypt::encryptString(json_encode(['id' => $user->id, 'email' => $user->email]));
+        $link = route("verify", ['token' => $token]);
+        Mail::to($user->email)->send(new VerificationEmail($link, $user->name));
         return redirect('/');
+
     }
 
-    // Do login view
-    public function login(Request $request)
-    {
+    public function login(Request $request) {
         return view('users.login');
     }
 
-    // Do Login logic
-    public function doLogin(Request $request)
-    {
-
-        if (!Auth::attempt(['email' => $request->email, 'password' => $request->password]))
+    public function doLogin(Request $request) {
+    	
+    	if(!Auth::attempt(['email' => $request->email, 'password' => $request->password]))
             return redirect()->back()->withInput($request->input())->withErrors('Invalid login information.');
 
         $user = User::where('email', $request->email)->first();
         Auth::setUser($user);
 
-        return redirect('/');
-    }
+        if(!$user->email_verified_at)
+            return redirect()->back()->withInput($request->input())->withErrors('Your email is not verified.');
 
-    // Do Logout
-    public function doLogout(Request $request)
-    {
-
-        Auth::logout();
 
         return redirect('/');
     }
 
-    public function profile(Request $request, User $user = null)
-    {
+    public function doLogout(Request $request) {
+    	
+    	Auth::logout();
 
-        $user = $user ?? auth()->user();
-        if (auth()->id() != $user->id) {
-            if (!auth()->user()->hasPermissionTo('show_users')) abort(401);
+        return redirect('/');
+    }
+
+    public function profile(Request $request, User $user = null) {
+
+        $user = $user??auth()->user();
+        if(auth()->id()!=$user->id) {
+            if(!auth()->user()->hasPermissionTo('show_users')) abort(401);
         }
 
         $permissions = [];
-        foreach ($user->permissions as $permission) {
+        foreach($user->permissions as $permission) {
             $permissions[] = $permission;
         }
-        foreach ($user->roles as $role) {
-            foreach ($role->permissions as $permission) {
+        foreach($user->roles as $role) {
+            foreach($role->permissions as $permission) {
                 $permissions[] = $permission;
             }
         }
@@ -156,113 +111,86 @@ class UsersController extends Controller
         return view('users.profile', compact('user', 'permissions'));
     }
 
-    public function edit(Request $request, User $user = null)
-    {
-
-        $user = $user ?? auth()->user();
-        if (auth()->id() != $user?->id) {
-            if (!auth()->user()->hasPermissionTo('edit_users')) abort(401);
+    public function edit(Request $request, User $user = null) {
+   
+        $user = $user??auth()->user();
+        if(auth()->id()!=$user?->id) {
+            if(!auth()->user()->hasPermissionTo('edit_users')) abort(401);
         }
-
+    
         $roles = [];
-        foreach (Role::all() as $role) {
+        foreach(Role::all() as $role) {
             $role->taken = ($user->hasRole($role->name));
             $roles[] = $role;
         }
 
         $permissions = [];
         $directPermissionsIds = $user->permissions()->pluck('id')->toArray();
-        foreach (Permission::all() as $permission) {
+        foreach(Permission::all() as $permission) {
             $permission->taken = in_array($permission->id, $directPermissionsIds);
             $permissions[] = $permission;
-        }
+        }      
 
         return view('users.edit', compact('user', 'roles', 'permissions'));
     }
 
-    public function save(Request $request, User $user)
-    {
+    public function save(Request $request, User $user) {
 
-        if (auth()->id() != $user->id) {
-            if (!auth()->user()->hasPermissionTo('show_users')) abort(401);
+        if(auth()->id()!=$user->id) {
+            if(!auth()->user()->hasPermissionTo('show_users')) abort(401);
         }
 
         $user->name = $request->name;
         $user->save();
 
-        if (auth()->user()->hasPermissionTo('admin_users')) {
+        if(auth()->user()->hasPermissionTo('admin_users')) {
 
-            $user->syncRoles($request->role);
+            $user->syncRoles($request->roles);
             $user->syncPermissions($request->permissions);
 
             Artisan::call('cache:clear');
         }
 
-        if ($request->role === 'Customer') {
-            UserCredit::create([
-                'user_id' => $user->id,
-                'credit_amount' => 0,
-            ]);
-        }
         //$user->syncRoles([1]);
         //Artisan::call('cache:clear');
 
-        return redirect(route('profile', ['user' => $user->id]));
+        return redirect(route('profile', ['user'=>$user->id]));
     }
 
-    public function delete(Request $request, User $user)
-    {
+    public function delete(Request $request, User $user) {
 
-        if (!auth()->user()->hasPermissionTo('delete_users')) abort(401);
+        if(!auth()->user()->hasPermissionTo('delete_users')) abort(401);
 
-        $user->delete();
+        //$user->delete();
 
         return redirect()->route('users');
     }
 
-    public function editPassword(Request $request, User $user = null)
-    {
+    public function editPassword(Request $request, User $user = null) {
 
-        $user = $user ?? auth()->user();
-        if (auth()->id() != $user?->id) {
-            if (!auth()->user()->hasPermissionTo('edit_users')) abort(401);
+        $user = $user??auth()->user();
+        if(auth()->id()!=$user?->id) {
+            if(!auth()->user()->hasPermissionTo('edit_users')) abort(401);
         }
 
         return view('users.edit_password', compact('user'));
     }
 
-    public function charge_credit(User $user){
-        return view ('users.charge_credit', compact('user'));
-    }
+    public function savePassword(Request $request, User $user) {
 
-    public function charge_credit_save(Request $request, User $user){
-        if (!auth()->user()->hasPermissionTo('add_credits')) abort(401);
-        $request->validate([
-            'credit_amount' => "required|numeric|min:1"
-        ]);
-
-        $userCredit = $user->credit;
-        $userCredit->credit_amount += $request->credit_amount;
-        $userCredit->save();
-
-        return redirect(route('users'));
-    }
-
-    public function savePassword(Request $request, User $user)
-    {
-
-        if (auth()->id() == $user?->id) {
-
+        if(auth()->id()==$user?->id) {
+            
             $this->validate($request, [
                 'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
             ]);
 
-            if (!Auth::attempt(['email' => $user->email, 'password' => $request->old_password])) {
-
+            if(!Auth::attempt(['email' => $user->email, 'password' => $request->old_password])) {
+                
                 Auth::logout();
                 return redirect('/');
             }
-        } else if (!auth()->user()->hasPermissionTo('edit_users')) {
+        }
+        else if(!auth()->user()->hasPermissionTo('edit_users')) {
 
             abort(401);
         }
@@ -270,6 +198,41 @@ class UsersController extends Controller
         $user->password = bcrypt($request->password); //Secure
         $user->save();
 
-        return redirect(route('profile', ['user' => $user->id]));
+        return redirect(route('profile', ['user'=>$user->id]));
     }
-}
+
+    public function verify(Request $request) {
+   
+        $decryptedData = json_decode(Crypt::decryptString($request->token), true);
+        $user = User::find($decryptedData['id']);
+        if(!$user) abort(401);
+        $user->email_verified_at = Carbon::now();
+        $user->save();
+
+        return view('users.verified', compact('user'));
+    }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback() {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+            $user = User::updateOrCreate([
+                'google_id' => $googleUser->id,
+            ], [
+                'name' => $googleUser->name,
+                'email' => $googleUser->email,
+                'google_token' => $googleUser->token,
+                'google_refresh_token' => $googleUser->refreshToken,
+            ]);
+            Auth::login($user);
+            return redirect('/');
+        } catch (\Exception $e) {
+            return redirect('/login')->with('error', 'Google login failed.'); // Handle errors
+        }
+    }
+
+} 

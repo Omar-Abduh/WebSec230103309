@@ -3,14 +3,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model  {
+class Course extends Model  {
+
+    public $timestamps = false;
 
 	protected $fillable = [
         'code',
         'name',
-        'price',
-        'model',
+        'max_degree',
         'description',
-        'photo'
     ];
 }
